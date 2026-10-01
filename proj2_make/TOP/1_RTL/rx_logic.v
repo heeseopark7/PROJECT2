@@ -86,19 +86,57 @@ always @(posedge clk or negedge nRst) begin
         r_tick_cnt  <= r_tick_cnt       ;
 end
 
-alwyas @(posedge clk or negedge nRst) begin
+always @(posedge clk or negedge nRst) begin
     if (!nRst)
-        r_state <= IDLE
+        r_state <= IDLE     ;
     else begin
         case (r_state)
-            IDLE    :   if (w_start_edge)   r_state <= 
-            START   :
-            DATA    :
-            STOP    :
-            PARITY  :
-            
+            IDLE    :   if (w_start_edge&&i_rx_en)
+                            r_state <=  START       ;
+            START   :   if (w_half&&(!i_rxd))
+                            r_state <=  DATA        ;
+                        else if (w_half&&i_rxd)
+                            r_state <=  IDLE        ;                 
+            DATA    :   if (w_bit_end) begin
+                            if (w_last_bit&&i_pen)
+                                r_state <=  PARITY  ;
+                            else if (w_last_bit&&(!i_pen))
+                                r_state <=  STOP    ; 
+                        end
+            PARITY  :   if  (w_bit_end)
+                            r_state <=  STOP        ;
+            STOP    :   if  (w_bit_end)
+                            r_state <=  IDLE        ;
         endcase
     end
 end
+
+always @(posedge clk or negedge nRst) begin
+    if (!nRst)
+        r_bit_cnt   <=  3'd0            ;
+    else if ((r_state==START)&&(w_half))
+        r_bit_cnt   <=  3'd0            ;
+    else if (w_shift_en)
+        r_bit_cnt   <=  r_bit_cnt + 1   ; 
+end
+
+always @(posedge clk or negedge nRst) begin
+    if (!nRst)
+        r_shift <= 8'b0                     ;
+    else if (w_shift_en)
+        r_shift <= {i_rxd,{r_shift[7:1]}}   ;
+end
+
+always @(posedge clk or negedge nRst) begin
+    if (!nRst)
+        r_pbit  <=  1'b0    ;
+    else if (w_par_end)
+        r_pbit  <=  i_rxd   ;
+end
+
+assign  o_fifo_push     = (w_stop_end)&&(!i_fifo_full)  ;
+assign  o_overrun       = (w_stop_end)&&(i_fifo_full)   ;
+assign  o_fifo_wdata    = {w_be, w_pe, w_fe, r_shift}   ;
+
 
 endmodule
