@@ -31,7 +31,7 @@ tx_fifo #(
         .DATA_WIDTH ( DATA_WIDTH ),
         .FIFO_DEPTH ( FIFO_DEPTH )
 ) dut   (
-        .clk			(clk    ),
+                .clk			(clk    ),
 		.nRst			(nRst   ),
 		.i_push			(i_push ),
 		.i_pop			(i_pop  ),
@@ -39,7 +39,7 @@ tx_fifo #(
 		.o_rdata		(o_rdata),
 		.o_empty		(o_empty),
 		.o_full			(o_full ),
-		.o_count        (o_count)
+		.o_count                (o_count)
 );
 
 endmodule
