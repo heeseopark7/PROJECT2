@@ -243,7 +243,7 @@ end
 // Waveform dump + watchdog
 //------------------------------------------------------------------------------
 initial begin
-    $dumpfile("tb_baud_gen.vcd");
+    $dumpfile("./DUMP/tb_baud_gen.vcd");
     $dumpvars(0, tb_baud_gen);
 end
 

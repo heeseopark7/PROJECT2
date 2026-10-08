@@ -391,7 +391,7 @@ end
 // Waveform dump + watchdog
 //------------------------------------------------------------------------------
 initial begin
-    $dumpfile("th_tx_fifo.vcd");
+    $dumpfile("./DUMP/th_tx_fifo.vcd");
     $dumpvars(0, th_tx_fifo);
 end
 
