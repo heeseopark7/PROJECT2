@@ -1,14 +1,12 @@
 //==============================================================================
-// Testbench : tb_rx_fifo
-// DUT       : rx_fifo (11-bit entry: {BE, PE, FE, DATA[7:0]})
+// Testbench : th_tx_fifo
+// DUT       : tx_fifo
 // Method    : Self-checking. A small reference model (m_mem / m_wr / m_rd /
-//             m_cnt) follows the rules written in rx_fifo.v. After every clock
+//             m_cnt) follows the rules written in tx_fifo.v. After every clock
 //             the DUT outputs (o_count, o_empty, o_full, and o_rdata while not
 //             empty) are compared with the model. Directed tests also check
 //             literal expected values, so a wrong model cannot hide a bug.
 //
-// Note      : rx_fifo only wraps tx_fifo with DATA_WIDTH = 11, so the same test
-//             plan is used. Data values use the flag bits [10:8] as well.
 // Tests     : (1) reset values
 //             (2) fill to full, count / full flag, data order
 //             (3) push when full is ignored
@@ -24,12 +22,12 @@
 
 `timescale 1ns / 1ps
 
-module tb_rx_fifo;
+module th_tx_fifo;
 
 //------------------------------------------------------------------------------
 // Parameters (same defaults as tx_fifo)
 //------------------------------------------------------------------------------
-localparam  DATA_WIDTH  = 11                        ;   // fixed inside rx_fifo
+parameter   DATA_WIDTH  = 8                         ;
 parameter   FIFO_DEPTH  = 16                        ;
 localparam  CNT_W       = $clog2(FIFO_DEPTH)+1      ;
 
@@ -70,7 +68,8 @@ reg  [DATA_WIDTH-1:0]   pat     [0:FIFO_DEPTH-1]    ;   // hex test pattern
 //------------------------------------------------------------------------------
 // DUT
 //------------------------------------------------------------------------------
-rx_fifo #(
+tx_fifo #(
+                .DATA_WIDTH (DATA_WIDTH )   ,
                 .FIFO_DEPTH (FIFO_DEPTH )
 )           uut (
                 .clk        (clk        )   ,
@@ -244,7 +243,7 @@ initial begin
     m_wr = 0;  m_rd = 0;  m_cnt = 0;
 
     for (i = 0; i < FIFO_DEPTH; i = i + 1)
-        pat[i] = 11'h5A3 + 11'h1D7 * i;     // distinct 11-bit hex values
+        pat[i] = 8'hA5 + 8'h1D * i;         // distinct hex values
 
     nRst    = 1'b1;
     i_push  = 1'b0;
@@ -275,8 +274,8 @@ initial begin
     // (3) push when full is ignored (data must not be overwritten)
     //--------------------------------------------------------------------------
     begin_test;
-    cycle(1'b1, 1'b0, 11'h6EE);
-    cycle(1'b1, 1'b0, 11'h2EF);
+    cycle(1'b1, 1'b0, 8'hEE);
+    cycle(1'b1, 1'b0, 8'hEF);
     expect_flags(FIFO_DEPTH, 1'b0, 1'b1);
     expect_rdata(pat[0]);
     end_test("(3) push when full ignored");
@@ -285,7 +284,7 @@ initial begin
     // (4) full + push&pop in the same clock : push dropped, pop done
     //--------------------------------------------------------------------------
     begin_test;
-    cycle(1'b1, 1'b1, 11'h5DD);
+    cycle(1'b1, 1'b1, 8'hDD);
     expect_flags(FIFO_DEPTH - 1, 1'b0, 1'b0);
     expect_rdata(pat[1]);
     end_test("(4) full + push&pop : pop only");
@@ -294,15 +293,15 @@ initial begin
     // (5) refill one entry, then drain : oldest-first order, empty flag
     //--------------------------------------------------------------------------
     begin_test;
-    cycle(1'b1, 1'b0, 11'h377);
+    cycle(1'b1, 1'b0, 8'h77);
     expect_flags(FIFO_DEPTH, 1'b0, 1'b1);
     for (i = 1; i < FIFO_DEPTH; i = i + 1) begin
         expect_rdata(pat[i]);
-        cycle(1'b0, 1'b1, 11'h000);
+        cycle(1'b0, 1'b1, 8'h00);
         expect_flags(FIFO_DEPTH - i, 1'b0, 1'b0);
     end
-    expect_rdata(11'h377);
-    cycle(1'b0, 1'b1, 11'h000);
+    expect_rdata(8'h77);
+    cycle(1'b0, 1'b1, 8'h00);
     expect_flags(0, 1'b1, 1'b0);
     end_test("(5) drain in order, empty flag");
 
@@ -310,8 +309,8 @@ initial begin
     // (6) pop when empty is ignored
     //--------------------------------------------------------------------------
     begin_test;
-    cycle(1'b0, 1'b1, 11'h000);
-    cycle(1'b0, 1'b1, 11'h000);
+    cycle(1'b0, 1'b1, 8'h00);
+    cycle(1'b0, 1'b1, 8'h00);
     expect_flags(0, 1'b1, 1'b0);
     end_test("(6) pop when empty ignored");
 
@@ -319,10 +318,10 @@ initial begin
     // (7) empty + push&pop in the same clock : pop ignored, push accepted
     //--------------------------------------------------------------------------
     begin_test;
-    cycle(1'b1, 1'b1, 11'h73C);
+    cycle(1'b1, 1'b1, 8'h3C);
     expect_flags(1, 1'b0, 1'b0);
-    expect_rdata(11'h73C);
-    cycle(1'b0, 1'b1, 11'h000);
+    expect_rdata(8'h3C);
+    cycle(1'b0, 1'b1, 8'h00);
     expect_flags(0, 1'b1, 1'b0);
     end_test("(7) empty + push&pop : push only");
 
@@ -332,19 +331,19 @@ initial begin
     begin_test;
     // push, check, pop : more than 2 x FIFO_DEPTH times
     for (i = 0; i < 2 * FIFO_DEPTH + 8; i = i + 1) begin
-        cycle(1'b1, 1'b0, 11'h410 + i[7:0]);
-        expect_rdata(11'h410 + i[7:0]);
-        cycle(1'b0, 1'b1, 11'h000);
+        cycle(1'b1, 1'b0, 8'h10 + i[7:0]);
+        expect_rdata(8'h10 + i[7:0]);
+        cycle(1'b0, 1'b1, 8'h00);
         expect_flags(0, 1'b1, 1'b0);
     end
     // streaming : one entry stays inside, push&pop every clock
-    cycle(1'b1, 1'b0, 11'h6C0);
+    cycle(1'b1, 1'b0, 8'hC0);
     for (i = 1; i <= 2 * FIFO_DEPTH + 8; i = i + 1) begin
-        expect_rdata(11'h6C0 + i[7:0] - 8'd1);        // entry pushed one clock ago
-        cycle(1'b1, 1'b1, 11'h6C0 + i[7:0]);
+        expect_rdata(8'hC0 + i[7:0] - 8'd1);        // entry pushed one clock ago
+        cycle(1'b1, 1'b1, 8'hC0 + i[7:0]);
         expect_flags(1, 1'b0, 1'b0);
     end
-    cycle(1'b0, 1'b1, 11'h000);
+    cycle(1'b0, 1'b1, 8'h00);
     expect_flags(0, 1'b1, 1'b0);
     end_test("(8) pointer wrap-around");
 
@@ -356,10 +355,10 @@ initial begin
     expect_flags(5, 1'b0, 1'b0);
     apply_reset;
     expect_flags(0, 1'b1, 1'b0);
-    cycle(1'b1, 1'b0, 11'h49A);                       // pointers must start from 0 again
+    cycle(1'b1, 1'b0, 8'h9A);                       // pointers must start from 0 again
     expect_flags(1, 1'b0, 1'b0);
-    expect_rdata(11'h49A);
-    cycle(1'b0, 1'b1, 11'h000);
+    expect_rdata(8'h9A);
+    cycle(1'b0, 1'b1, 8'h00);
     expect_flags(0, 1'b1, 1'b0);
     end_test("(9) asynchronous reset");
 
@@ -383,8 +382,8 @@ initial begin
     end
 
     //--------------------------------------------------------------------------
-    if (err_cnt == 0) $display("=== tb_rx_fifo : ALL PASS ===");
-    else              $display("=== tb_rx_fifo : FAIL (%0d errors) ===", err_cnt);
+    if (err_cnt == 0) $display("=== th_tx_fifo : ALL PASS ===");
+    else              $display("=== th_tx_fifo : FAIL (%0d errors) ===", err_cnt);
     $finish;
 end
 
@@ -392,8 +391,8 @@ end
 // Waveform dump + watchdog
 //------------------------------------------------------------------------------
 initial begin
-    $dumpfile("./DUMP/tb_rx_fifo.vcd");
-    $dumpvars(0, tb_rx_fifo);
+    $dumpfile("./DUMP/th_tx_fifo.vcd");
+    $dumpvars(0, th_tx_fifo);
 end
 
 initial begin
