@@ -102,23 +102,28 @@ wire    [6:0]       w_mis                               ;   // masked interrupt 
 wire    [6:0]       w_imsc                              ;   // interrupt mask from reg_block
 wire    [6:0]       w_icr                               ;   // interrupt clear pulses from reg_block
 
-wire                w_PCLK                              ;
-wire                w_PRESETn                           ;
-wire                w_PSEL                              ;
-wire                w_PENABLE                           ;
-wire                w_PWRITE                            ;
-wire    [11:2]      w_PRADDR                            ;
-wire    [31:0]      w_PWDATA                            ;
-wire    [31:0]      w_PRDATA                            ;
-wire                w_PREADY                            ;
-wire                w_PSLVERR                           ;
-wire                w_UARTRXD                           ;
-wire                w_UARTTXD                           ;
-wire                w_UARTRXINTR                        ;
-wire                w_UARTTXINTR                        ;
-wire                w_UARTRTINTR                        ;
-wire                w_UARTEINTR                         ;
-wire                w_UARTINTR                          ;
+//------------------------------------------------------------------------------
+// Pad-side wires: w_<pin name> = the same signal on the core side of its pad
+//   input pin  --PADDI--> w_<pin>  --> core logic
+//   core logic --> w_<pin> --PADDO--> output pin
+//------------------------------------------------------------------------------
+wire                w_PCLK                              ;   // PCLK after its input pad
+wire                w_PRESETn                           ;   // PRESETn after its input pad
+wire                w_PSEL                              ;   // PSEL after its input pad
+wire                w_PENABLE                           ;   // PENABLE after its input pad
+wire                w_PWRITE                            ;   // PWRITE after its input pad
+wire    [11:2]      w_PRADDR                            ;   // PADDR after its input pads (10 bits)
+wire    [31:0]      w_PWDATA                            ;   // PWDATA after its input pads (32 bits)
+wire    [31:0]      w_PRDATA                            ;   // PRDATA before its output pads (from reg_block)
+wire                w_PREADY                            ;   // PREADY before its output pad (from reg_block)
+wire                w_PSLVERR                           ;   // PSLVERR before its output pad (from reg_block)
+wire                w_UARTRXD                           ;   // UARTRXD after its input pad (to the synchronizer)
+wire                w_UARTTXD                           ;   // UARTTXD before its output pad (= w_txd)
+wire                w_UARTRXINTR                        ;   // RX interrupt before its output pad
+wire                w_UARTTXINTR                        ;   // TX interrupt before its output pad
+wire                w_UARTRTINTR                        ;   // receive-timeout interrupt before its output pad
+wire                w_UARTEINTR                         ;   // error interrupt before its output pad
+wire                w_UARTINTR                          ;   // combined interrupt before its output pad
 
 //------------------------------------------------------------------------------
 // 2-FF synchronizer
@@ -288,87 +293,97 @@ interrupt_logic #(
                 .o_intr         (w_UARTINTR )
 );
 
-PADDI   i_pad1(
+//------------------------------------------------------------------------------
+// I/O pads (one cell = one bit)
+//   PADDI : input pad.  .PAD = chip pin,        .Y   = signal into the core
+//   PADDO : output pad. .A   = signal from core, .PAD = chip pin
+//   Buses use an instance array: the range after the instance name makes one
+//   cell per bit and connects the buses bit by bit (range width = bus width).
+//   Input pads: 8 instances / 48 cells.  Output pads: 9 instances / 40 cells.
+//------------------------------------------------------------------------------
+// input pads
+PADDI   i_pad1(                 // PCLK
     .PAD        (PCLK       ),
     .Y          (w_PCLK     )
 );
 
-PADDI   i_pad2(
+PADDI   i_pad2(      // PRESETn
     .PAD        (PRESETn    ),
     .Y          (w_PRESETn  )
 );
 
-PADDI   i_pad3(
+PADDI   i_pad3(      // PSEL
     .PAD        (PSEL       ),
     .Y          (w_PSEL     )
 );
 
-PADDI   i_pad4(
+PADDI   i_pad4(      // PENABLE
     .PAD        (PENABLE    ),
     .Y          (w_PENABLE  )
 );
 
-PADDI   i_pad5(
+PADDI   i_pad5(      // PWRITE
     .PAD        (PWRITE     ),
     .Y          (w_PWRITE   )
 );
 
-PADDI   i_pad6[11:2](
+PADDI   i_pad6[11:2](      // PADDR[11:2], 10 cells
     .PAD        (PADDR      ),
     .Y          (w_PRADDR   )
 );
 
-PADDI   i_pad7[31:0](
+PADDI   i_pad7[31:0](      // PWDATA[31:0], 32 cells
     .PAD        (PWDATA     ),
     .Y          (w_PWDATA   )
 );
 
-PADDI   i_pad8(
+PADDI   i_pad8(      // UARTRXD
     .PAD        (UARTRXD    ),
     .Y          (w_UARTRXD  )
 );
 
-PADDO   o_pad1[31:0](
+// output pads
+PADDO   o_pad1[31:0](      // PRDATA[31:0], 32 cells
     .A          (w_PRDATA   ),
     .PAD        (PRDATA     )
 );
 
-PADDO   o_pad2(
+PADDO   o_pad2(      // PREADY
     .A          (w_PREADY   ),
     .PAD        (PREADY     )
 );
 
-PADDO   o_pad3(
+PADDO   o_pad3(      // PSLVERR
     .A          (w_PSLVERR  ),
     .PAD        (PSLVERR    )
 );
 
-PADDO   o_pad4(
+PADDO   o_pad4(      // UARTTXD
     .A          (w_UARTTXD  ),
     .PAD        (UARTTXD    )
 );
 
-PADDO   o_pad5(
+PADDO   o_pad5(      // UARTRXINTR
     .A          (w_UARTRXINTR),
     .PAD        (UARTRXINTR )
 );
 
-PADDO   o_pad6(
+PADDO   o_pad6(      // UARTTXINTR
     .A          (w_UARTTXINTR),
     .PAD        (UARTTXINTR )
 );
 
-PADDO   o_pad7(
+PADDO   o_pad7(      // UARTRTINTR
     .A          (w_UARTRTINTR),
     .PAD        (UARTRTINTR )
 );
 
-PADDO   o_pad8(
+PADDO   o_pad8(      // UARTEINTR
     .A          (w_UARTEINTR),
     .PAD        (UARTEINTR  )
 );
 
-PADDO   o_pad9(
+PADDO   o_pad9(      // UARTINTR
     .A          (w_UARTINTR ),
     .PAD        (UARTINTR   )
 );
