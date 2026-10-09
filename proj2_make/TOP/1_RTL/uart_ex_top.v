@@ -101,20 +101,38 @@ wire    [6:0]       w_ris                               ;   // raw interrupt sta
 wire    [6:0]       w_mis                               ;   // masked interrupt status
 wire    [6:0]       w_imsc                              ;   // interrupt mask from reg_block
 wire    [6:0]       w_icr                               ;   // interrupt clear pulses from reg_block
- 
+
+wire                w_PCLK                              ;
+wire                w_PRESETn                           ;
+wire                w_PSEL                              ;
+wire                w_PENABLE                           ;
+wire                w_PWRITE                            ;
+wire    [11:2]      w_PRADDR                            ;
+wire    [31:0]      w_PWDATA                            ;
+wire    [31:0]      w_PRDATA                            ;
+wire                w_PREADY                            ;
+wire                w_PSLVERR                           ;
+wire                w_UARTRXD                           ;
+wire                w_UARTTXD                           ;
+wire                w_UARTRXINTR                        ;
+wire                w_UARTTXINTR                        ;
+wire                w_UARTRTINTR                        ;
+wire                w_UARTEINTR                         ;
+wire                w_UARTINTR                          ;
+
 //------------------------------------------------------------------------------
 // 2-FF synchronizer
 //   UARTRXD changes at any time relative to PCLK. Two flip-flops in series
 //   give the first one time to settle, so only r_rxd_s2 is used inside.
 //   Reset value is 1 (idle level) so no false start bit appears after reset.
 //------------------------------------------------------------------------------
-always @(posedge PCLK or negedge PRESETn) begin
-    if (!PRESETn)   begin
+always @(posedge w_PCLK or negedge w_PRESETn) begin
+    if (!w_PRESETn)   begin
         r_rxd_s1    <=  1'b1            ;
         r_rxd_s2    <=  1'b1            ;
     end
     else    begin
-        r_rxd_s1    <=  UARTRXD         ;
+        r_rxd_s1    <=  w_UARTRXD       ;
         r_rxd_s2    <=  r_rxd_s1        ;
     end
 end
@@ -125,15 +143,15 @@ end
 //   w_lbe = 0 : rx_logic receives the synchronized external UARTRXD
 //   The UARTTXD pin always shows w_txd, also during loopback.
 //------------------------------------------------------------------------------
-assign  w_rxd   = w_lbe ? w_txd : r_rxd_s2  ;
-assign  UARTTXD = w_txd                     ;
+assign  w_rxd     = w_lbe ? w_txd : r_rxd_s2  ;
+assign  w_UARTTXD = w_txd                     ;
  
 //------------------------------------------------------------------------------
 // baud_gen : makes the 16x tick from the divisor in reg_block
 //------------------------------------------------------------------------------
 baud_gen    uut1    (
-                .clk        (PCLK       )   ,
-                .nRst       (PRESETn    )   ,
+                .clk        (w_PCLK     )   ,
+                .nRst       (w_PRESETn  )   ,
                 .i_ibrd     (w_ibrd     )   ,
                 .o_tick_16x (w_tick     )
 );
@@ -144,8 +162,8 @@ baud_gen    uut1    (
 tx_fifo     #(
                 .FIFO_DEPTH (FIFO_DEPTH )
 )           uut2
-(               .clk	    (PCLK       )	,
-				.nRst		(PRESETn    )	,
+(               .clk	    (w_PCLK     )	,
+				.nRst		(w_PRESETn  )	,
 				.i_push		(w_tx_push  )	,
 				.i_pop		(w_tx_pop   )	,
 				.i_wdata	(w_tx_wdata )	,
@@ -161,8 +179,8 @@ tx_fifo     #(
 rx_fifo     #(
                 .FIFO_DEPTH (FIFO_DEPTH )
 )           uut3
-(               .clk        (PCLK       )   ,
-                .nRst       (PRESETn    )   ,
+(               .clk        (w_PCLK     )   ,
+                .nRst       (w_PRESETn  )   ,
                 .i_push     (w_rx_push  )   ,
                 .i_pop      (w_rx_pop   )   ,
                 .i_wdata    (w_rx_wdata )   ,
@@ -176,8 +194,8 @@ rx_fifo     #(
 // tx_logic : takes a byte from tx_fifo and sends it bit by bit on w_txd
 //------------------------------------------------------------------------------
 tx_logic    uut4    (
-                .clk            (PCLK       )	,
-				.nRst		    (PRESETn    )   ,
+                .clk            (w_PCLK     )	,
+				.nRst		    (w_PRESETn  )   ,
 				.i_tick_16x	    (w_tick     )   ,
 				.i_tx_en	    (w_tx_en    )   ,
 				.i_brk		    (w_brk      )   ,
@@ -194,8 +212,8 @@ tx_logic    uut4    (
 // rx_logic : samples w_rxd, builds a frame with error flags, pushes it to rx_fifo
 //------------------------------------------------------------------------------
 rx_logic    uut5    (
-                .clk            (PCLK       )   ,
-                .nRst           (PRESETn    )   ,
+                .clk            (w_PCLK     )   ,
+                .nRst           (w_PRESETn  )   ,
                 .i_rxd          (w_rxd      )   ,
                 .i_tick_16x     (w_tick     )   ,
                 .i_rx_en        (w_rx_en    )   ,
@@ -211,13 +229,13 @@ rx_logic    uut5    (
 // reg_block : APB slave and register file (also builds UARTFR, enables, etc.)
 //------------------------------------------------------------------------------
 reg_block   uut6    (
-                .clk            (PCLK       )   ,
-                .nRst           (PRESETn    )   ,
-                .i_psel         (PSEL       )   ,
-                .i_penable      (PENABLE    )   ,
-                .i_pwrite       (PWRITE     )   ,
-                .i_paddr        (PADDR      )   ,
-                .i_pwdata       (PWDATA     )   ,
+                .clk            (w_PCLK     )   ,
+                .nRst           (w_PRESETn  )   ,
+                .i_psel         (w_PSEL     )   ,
+                .i_penable      (w_PENABLE  )   ,
+                .i_pwrite       (w_PWRITE   )   ,
+                .i_paddr        (w_PRADDR   )   ,
+                .i_pwdata       (w_PWDATA   )   ,
                 .i_tx_full      (w_tx_full  )   ,
                 .i_tx_empty     (w_tx_empty )   ,
                 .i_rx_rdata     (w_rx_rdata )   ,
@@ -226,9 +244,9 @@ reg_block   uut6    (
                 .i_tx_busy      (w_tx_busy  )   ,
                 .i_ris          (w_ris      )   ,
                 .i_mis          (w_mis      )   ,
-                .o_prdata       (PRDATA     )   ,
-                .o_pready       (PREADY     )   ,
-                .o_pslverr      (PSLVERR    )   ,
+                .o_prdata       (w_PRDATA   )   ,
+                .o_pready       (w_PREADY   )   ,
+                .o_pslverr      (w_PSLVERR  )   ,
                 .o_tx_push      (w_tx_push  )   ,
                 .o_tx_wdata     (w_tx_wdata )   ,
                 .o_rx_pop       (w_rx_pop   )   ,
@@ -250,8 +268,8 @@ reg_block   uut6    (
 interrupt_logic #(
                 .FIFO_DEPTH (FIFO_DEPTH)
 )           uut7
-(               .clk            (PCLK       )   ,
-                .nRst           (PRESETn    )   ,
+(               .clk            (w_PCLK     )   ,
+                .nRst           (w_PRESETn  )   ,
                 .i_tx_count     (w_tx_count )   ,
                 .i_rx_count     (w_rx_count )   ,
                 .i_rx_empty     (w_rx_empty )   ,
@@ -263,11 +281,96 @@ interrupt_logic #(
                 .i_icr          (w_icr      )   ,
                 .o_ris          (w_ris      )   ,
                 .o_mis          (w_mis      )   ,
-                .o_rxintr       (UARTRXINTR )   ,
-                .o_txintr       (UARTTXINTR )   ,
-                .o_rtintr       (UARTRTINTR )   ,
-                .o_eintr        (UARTEINTR  )   ,
-                .o_intr         (UARTINTR   )
+                .o_rxintr       (w_UARTRXINTR)  ,
+                .o_txintr       (w_UARTTXINTR)  ,
+                .o_rtintr       (w_UARTRTINTR)  ,
+                .o_eintr        (w_UARTEINTR)   ,
+                .o_intr         (w_UARTINTR )
 );
- 
+
+PADDI   i_pad1(
+    .PAD        (PCLK       ),
+    .Y          (w_PCLK     )
+);
+
+PADDI   i_pad2(
+    .PAD        (PRESETn    ),
+    .Y          (w_PRESETn  )
+);
+
+PADDI   i_pad3(
+    .PAD        (PSEL       ),
+    .Y          (w_PSEL     )
+);
+
+PADDI   i_pad4(
+    .PAD        (PENABLE    ),
+    .Y          (w_PENABLE  )
+);
+
+PADDI   i_pad5(
+    .PAD        (PWRITE     ),
+    .Y          (w_PWRITE   )
+);
+
+PADDI   i_pad6[11:2](
+    .PAD        (PADDR      ),
+    .Y          (w_PRADDR   )
+);
+
+PADDI   i_pad7[31:0](
+    .PAD        (PWDATA     ),
+    .Y          (w_PWDATA   )
+);
+
+PADDI   i_pad8(
+    .PAD        (UARTRXD    ),
+    .Y          (w_UARTRXD  )
+);
+
+PADDO   o_pad1[31:0](
+    .A          (w_PRDATA   ),
+    .PAD        (PRDATA     )
+);
+
+PADDO   o_pad2(
+    .A          (w_PREADY   ),
+    .PAD        (PREADY     )
+);
+
+PADDO   o_pad3(
+    .A          (w_PSLVERR  ),
+    .PAD        (PSLVERR    )
+);
+
+PADDO   o_pad4(
+    .A          (w_UARTTXD  ),
+    .PAD        (UARTTXD    )
+);
+
+PADDO   o_pad5(
+    .A          (w_UARTRXINTR),
+    .PAD        (UARTRXINTR )
+);
+
+PADDO   o_pad6(
+    .A          (w_UARTTXINTR),
+    .PAD        (UARTTXINTR )
+);
+
+PADDO   o_pad7(
+    .A          (w_UARTRTINTR),
+    .PAD        (UARTRTINTR )
+);
+
+PADDO   o_pad8(
+    .A          (w_UARTEINTR),
+    .PAD        (UARTEINTR  )
+);
+
+PADDO   o_pad9(
+    .A          (w_UARTINTR ),
+    .PAD        (UARTINTR   )
+);
+
 endmodule

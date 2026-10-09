@@ -6,7 +6,7 @@ xrun -64bit \
      -profthread \
      -gui \
      +libext+.v \
-     ../TESTBENCH/tb_tx_fifo.v \
+     ../TESTBENCH/tb_tx_logic.v \
      ../../1_RTL/uart_ex_top.v \
      ../../1_RTL/baud_gen.v \
      ../../1_RTL/interrupt_logic.v \
