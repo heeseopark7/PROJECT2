@@ -101,23 +101,8 @@ set_operating_conditions  -max_library [get_libs slow_vdd1v0_basicCells.lib:slow
 #                                 #
 ###################################
 
-set_dont_touch i_pad1 
-set_dont_touch i_pad2 
-set_dont_touch i_pad3 
-set_dont_touch i_pad4 
-set_dont_touch i_pad5
-set_dont_touch i_pad6
-set_dont_touch i_pad7
-set_dont_touch i_pad8
-set_dont_touch o_pad1
-set_dont_touch o_pad2
-set_dont_touch o_pad3
-set_dont_touch o_pad4
-set_dont_touch o_pad5
-set_dont_touch o_pad6
-set_dont_touch o_pad7
-set_dont_touch o_pad8
-set_dont_touch o_pad9  
+set_dont_touch [get_db insts *ipad*] 
+set_dont_touch [get_db insts *opad*]
 
 # Below is no use in Genus tool
 #set_isolate_ports [all_outputs]

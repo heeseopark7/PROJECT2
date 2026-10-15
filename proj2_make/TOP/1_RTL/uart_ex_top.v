@@ -302,88 +302,88 @@ interrupt_logic #(
 //   Input pads: 8 instances / 48 cells.  Output pads: 9 instances / 40 cells.
 //------------------------------------------------------------------------------
 // input pads
-PADDI   i_pad1(                 // PCLK
+PADDI   ipad1(                 // PCLK
     .PAD        (PCLK       ),
     .Y          (w_PCLK     )
 );
 
-PADDI   i_pad2(      // PRESETn
+PADDI   ipad2(      // PRESETn
     .PAD        (PRESETn    ),
     .Y          (w_PRESETn  )
 );
 
-PADDI   i_pad3(      // PSEL
+PADDI   ipad3(      // PSEL
     .PAD        (PSEL       ),
     .Y          (w_PSEL     )
 );
 
-PADDI   i_pad4(      // PENABLE
+PADDI   ipad4(      // PENABLE
     .PAD        (PENABLE    ),
     .Y          (w_PENABLE  )
 );
 
-PADDI   i_pad5(      // PWRITE
+PADDI   ipad5(      // PWRITE
     .PAD        (PWRITE     ),
     .Y          (w_PWRITE   )
 );
 
-PADDI   i_pad6[11:2](      // PADDR[11:2], 10 cells
+PADDI   ipad6[11:2](      // PADDR[11:2], 10 cells
     .PAD        (PADDR      ),
     .Y          (w_PRADDR   )
 );
 
-PADDI   i_pad7[31:0](      // PWDATA[31:0], 32 cells
+PADDI   ipad7[31:0](      // PWDATA[31:0], 32 cells
     .PAD        (PWDATA     ),
     .Y          (w_PWDATA   )
 );
 
-PADDI   i_pad8(      // UARTRXD
+PADDI   ipad8(      // UARTRXD
     .PAD        (UARTRXD    ),
     .Y          (w_UARTRXD  )
 );
 
 // output pads
-PADDO   o_pad1[31:0](      // PRDATA[31:0], 32 cells
+PADDO   opad1[31:0](      // PRDATA[31:0], 32 cells
     .A          (w_PRDATA   ),
     .PAD        (PRDATA     )
 );
 
-PADDO   o_pad2(      // PREADY
+PADDO   opad2(      // PREADY
     .A          (w_PREADY   ),
     .PAD        (PREADY     )
 );
 
-PADDO   o_pad3(      // PSLVERR
+PADDO   opad3(      // PSLVERR
     .A          (w_PSLVERR  ),
     .PAD        (PSLVERR    )
 );
 
-PADDO   o_pad4(      // UARTTXD
+PADDO   opad4(      // UARTTXD
     .A          (w_UARTTXD  ),
     .PAD        (UARTTXD    )
 );
 
-PADDO   o_pad5(      // UARTRXINTR
+PADDO   opad5(      // UARTRXINTR
     .A          (w_UARTRXINTR),
     .PAD        (UARTRXINTR )
 );
 
-PADDO   o_pad6(      // UARTTXINTR
+PADDO   opad6(      // UARTTXINTR
     .A          (w_UARTTXINTR),
     .PAD        (UARTTXINTR )
 );
 
-PADDO   o_pad7(      // UARTRTINTR
+PADDO   opad7(      // UARTRTINTR
     .A          (w_UARTRTINTR),
     .PAD        (UARTRTINTR )
 );
 
-PADDO   o_pad8(      // UARTEINTR
+PADDO   opad8(      // UARTEINTR
     .A          (w_UARTEINTR),
     .PAD        (UARTEINTR  )
 );
 
-PADDO   o_pad9(      // UARTINTR
+PADDO   opad9(      // UARTINTR
     .A          (w_UARTINTR ),
     .PAD        (UARTINTR   )
 );
