@@ -10,7 +10,7 @@ puts "Hostname : [info hostname]"
 # Preset global variables and attributes
 ######################################################################
 
-set TOP_DESIGN  uart_top
+set TOP_DESIGN  uart_ex_top
 
 set LOG_DIR     "./log"
 set RPT_DIR     "./report"
@@ -21,7 +21,7 @@ set MAPPED_DIR     "./mapped"
 set STD_LIB_PATH "../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/timing"
 set IO_LIB_PATH "../../../../SoC/GPDK045/digital/giolib045_v3.5/timing"
 set LEF_LIB_PATH "../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/lef ../../../../SoC/GPDK045/digital/giolib045_v3.5/lef"
-set RTL_PATH     "../RTL"
+set RTL_PATH     "../1_RTL"
 set QRC_FILE_PATH "../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045_tech/qrc/qx"
 
 #GPDK 045 SVT
@@ -30,11 +30,14 @@ set LIB_LIST {fast_vdd1v0_basicCells.lib slow_vdd1v0_basicCells.lib pads_SS_s1vg
 set LEF_LIST {gsclib045_tech.lef gsclib045_macro.lef giolib045.lef}
 set QRC_LIST {gpdk045.tch}
 
-set RTL_SOURCES "../RTL/uart_top.v \
-		../RTL/cmd_decoder.v \
-		../RTL/uart_rx.v \
-		../RTL/uart_tx.v \
-		../RTL/baud_gen.v \
+set RTL_SOURCES "../1_RTL/uart_ex_top.v \
+		../1_RTL/interrupt_logic.v \
+    ../1_RTL/reg_block.v \
+		../1_RTL/rx_fifo.v \
+    ../1_RTL/rx_logic.v \
+		../1_RTL/tx_fifo.v \
+    ../1_RTL/tx_logic.v \
+		../1_RTL/baud_gen.v \
 "
 set_db auto_ungroup none
 set_db max_cpus_per_server 2

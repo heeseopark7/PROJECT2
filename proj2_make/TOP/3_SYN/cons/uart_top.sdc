@@ -22,7 +22,7 @@ reset_design
 #############################
 # Below is CLOCK SPEED 
 # Original Speed is 1ns and 80% adoptation is needed to ensure the stability of the chip
-create_clock -period 0.8 -name MAIN_CLOCK [get_ports i_clk]
+create_clock -period 0.8 -name MAIN_CLOCK [get_ports PCLK]
 
 # External clock source and network latency is 0.2ns 
 set_clock_latency -source -max 0.2 [get_clocks MAIN_CLOCK] 
@@ -54,7 +54,7 @@ set_clock_transition 0.1 [get_clocks MAIN_CLOCK]
 set_input_delay -max 0.1 -clock MAIN_CLOCK [all_inputs]
 set_input_delay -min 0.01 -clock MAIN_CLOCK [all_inputs]
 
-remove_input_delay [get_ports "i_clk"]
+remove_input_delay [get_ports "PCLK"]
 
 set_output_delay -max 0.1 -clock MAIN_CLOCK [all_outputs]
 set_output_delay -min -0.01 -clock MAIN_CLOCK [all_outputs]
@@ -71,7 +71,7 @@ set_output_delay -min -0.01 -clock MAIN_CLOCK [all_outputs]
 #set_driving_cell -lib_cell DFFHQX1 -pin Q [remove_from_collection [all_inputs] [get_ports clk]]
 
 #set_driving_cell -lib_cell PADDI -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports XTAL1]]
-set_driving_cell -lib_cell PADDI -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports i_clk]]
+set_driving_cell -lib_cell PADDI -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
 
 #set_load [load_of $STD_LIB/PADDO/A] [get_ports {TDO XTAL2}]
 set_load [load_of PADDO/A] [all_outputs]
@@ -101,16 +101,28 @@ set_operating_conditions  -max_library [get_libs slow_vdd1v0_basicCells.lib:slow
 #                                 #
 ###################################
 
-set_dont_touch pad1 
-set_dont_touch pad2 
-set_dont_touch pad3 
-set_dont_touch pad4 
-set_dont_touch pad5 
+set_dont_touch i_pad1 
+set_dont_touch i_pad2 
+set_dont_touch i_pad3 
+set_dont_touch i_pad4 
+set_dont_touch i_pad5
+set_dont_touch i_pad6
+set_dont_touch i_pad7
+set_dont_touch i_pad8
+set_dont_touch o_pad1
+set_dont_touch o_pad2
+set_dont_touch o_pad3
+set_dont_touch o_pad4
+set_dont_touch o_pad5
+set_dont_touch o_pad6
+set_dont_touch o_pad7
+set_dont_touch o_pad8
+set_dont_touch o_pad9  
 
 # Below is no use in Genus tool
 #set_isolate_ports [all_outputs]
 
-set_ideal_network [get_ports "i_clk i_nRst"]
+set_ideal_network [get_ports "PCLK PRESETn"]
 #set_ideal_network [get_pins u_cmsdk_mcu_clkctrl/hrst_reg_reg/Q]
 #set_ideal_network [get_pins u_cmsdk_mcu_clkctrl/prst_reg_reg/Q]
 
