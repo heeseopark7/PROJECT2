@@ -1,7 +1,7 @@
 (DELAYFILE
   (SDFVERSION  "OVI 3.0")
   (DESIGN      "uart_ex_top")
-  (DATE        "Thu Oct 15 20:43:44 KST 2026")
+  (DATE        "Wed Oct 21 02:07:45 KST 2026")
   (VENDOR      "Cadence, Inc.")
   (PROGRAM     "Genus(TM) Synthesis Solution")
   (VERSION     "22.17-s071_1")
