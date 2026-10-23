@@ -1,20 +1,19 @@
 #################################################################################
 #
-# Created by Genus(TM) Synthesis Solution 22.17-s071_1 on Wed Oct 21 02:07:44 KST 2026
+# Created by Genus(TM) Synthesis Solution 22.17-s071_1 on Sat Oct 24 01:15:38 KST 2026
 #
 #################################################################################
 
 ## library_sets
 create_library_set -name default_emulate_libset_max \
-    -timing { /home/hah013/PROJ2/proj2_make/TOP/3_SYN/../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/timing/fast_vdd1v0_basicCells.lib \
-              /home/hah013/PROJ2/proj2_make/TOP/3_SYN/../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/timing/slow_vdd1v0_basicCells.lib \
+    -timing { /home/hah013/PROJ2/proj2_make/TOP/3_SYN/../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/timing/slow_vdd1v0_basicCells.lib /home/hah013/PROJ2/proj2_make/TOP/3_SYN/../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/timing/slow_vdd1v0_multibitsDFF.lib \
               /home/hah013/PROJ2/proj2_make/TOP/3_SYN/../../../../SoC/GPDK045/digital/giolib045_v3.5/timing/pads_SS_s1vg.lib }
 
 ## opcond
 create_opcond -name default_emulate_opcond \
     -process 1.0 \
-    -voltage 1.1 \
-    -temperature 0.0
+    -voltage 0.9 \
+    -temperature 125.0
 
 ## timing_condition
 create_timing_condition -name default_emulate_timing_cond_max \
@@ -23,7 +22,7 @@ create_timing_condition -name default_emulate_timing_cond_max \
 
 ## rc_corner
 create_rc_corner -name default_emulate_rc_corner \
-    -temperature 0.0 \
+    -temperature 125.0 \
     -qrc_tech /home/hah013/PROJ2/proj2_make/TOP/3_SYN/../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045_tech/qrc/qx/gpdk045.tch \
     -pre_route_res 1.0 \
     -pre_route_cap 1.0 \

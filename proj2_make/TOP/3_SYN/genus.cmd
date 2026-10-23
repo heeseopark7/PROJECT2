@@ -1,6 +1,6 @@
 # Cadence Genus(TM) Synthesis Solution, Version 22.17-s071_1, built Sep 12 2024 12:37:05
 
-# Date: Wed Oct 21 01:42:33 2026
+# Date: Sat Oct 24 00:30:38 2026
 # Host: kopo-seongnam (x86_64 w/Linux 3.10.0-1160.el7.x86_64) (20cores*80cpus*2physical cpus*Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz 28160KB)
 # OS:   CentOS Linux release 7.9.2009 (Core)
 
@@ -11,17 +11,15 @@ if {[file exists /proc/cpuinfo]} {
 puts "Hostname : [info hostname]"
 set TOP_DESIGN uart_ex_top
 set LOG_DIR "./log"
-set_RPT_DIR "./report"
 set RPT_DIR "./report"
 set UNMAPPED_DIR "./unmapped"
-set_MAPPED_DIR "./mapped"
 set MAPPED_DIR "./mapped"
-set STD_LIB_PATH "../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/timing"
+set STD_LIB_PATH  "../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/timing"
 set IO_LIB_PATH "../../../../SoC/GPDK045/digital/giolib045_v3.5/timing"
 set LEF_LIB_PATH "../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/lef ../../../../SoC/GPDK045/digital/giolib045_v3.5/lef"
-set RTL_PATH     "../1_RTL"
+set RTL_PATH "../1_RTL"
 set QRC_FILE_PATH "../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045_tech/qrc/qx"
-set LIB_LIST {fast_vdd1v0_basicCells.lib slow_vdd1v0_basicCells.lib pads_SS_s1vg.lib}
+set LIB_LIST {slow_vdd1v0_basicCells.lib slow_vdd1v0_multibitsDFF.lib pads_SS_s1vg.lib}
 set LEF_LIST {gsclib045_tech.lef gsclib045_macro.lef giolib045.lef}
 set QRC_LIST {gpdk045.tch}
 set RTL_SOURCES "../1_RTL/uart_ex_top.v \
@@ -35,9 +33,9 @@ set RTL_SOURCES "../1_RTL/uart_ex_top.v \
 "
 set_db auto_ungroup none
 set_db max_cpus_per_server 2
-set_db syn_generic_effort high; # Default medium
-set_db syn_map_effort high;     # Default medium
-set_db syn_opt_effort high;     # Default medium
+set_db syn_generic_effort high
+set_db syn_map_effort high
+set_db syn_opt_effort high
 set_db init_lib_search_path [concat $STD_LIB_PATH $IO_LIB_PATH $LEF_LIB_PATH $QRC_FILE_PATH]
 set_db init_hdl_search_path [concat $RTL_PATH]
 read_libs ${LIB_LIST}
@@ -49,6 +47,8 @@ read_hdl $RTL_SOURCES
 elaborate ${TOP_DESIGN}
 puts "Runtime & Memory after 'read_hdl'"
 time_info Elaboration
+set_db optimize_merge_flops false
+set_db optimize_merge_latches false
 uniquify -verbose ${TOP_DESIGN}
 check_design
 check_design > ${RPT_DIR}/00_check_design.rpt
@@ -58,24 +58,19 @@ source -verbose  ./cons/uart_top.sdc     ; #This command can't write report by u
 source -verbose  ./cons/dont_use_45nm.tcl ; #This command can't write report by using the mark '>'
 puts "The number of exceptions is [llength [vfind "design:$TOP_DESIGN" -exception *]]"
 check_timing_intent -verbose > ${RPT_DIR}/01_check_timing_intent.rpt
-check_timing_intent -verbose
 report_port -delay -driver [all_inputs] > ${RPT_DIR}/02_report_port.rpt
 report_port -delay -load [all_outputs] >> ${RPT_DIR}/02_report_port.rpt
-report_port -delay -driver [all_inputs]
-report_port -delay -load [all_outputs]
 echo -n "\n TIMEX > compile is ready :            ";
 sh date
-syn_generic ;
-gui_raise
-gui_hide
+syn_generic
 puts "Runtime & Memory after 'syn_generic'"
 time_info GENERIC
 report_datapath > ${RPT_DIR}/03_report_datapath_generic.rpt
 write_snapshot -outdir ${RPT_DIR} -tag syn_generic
 write_db -to_file  ${UNMAPPED_DIR}/syn_generic.db
-syn_map ;
 gui_raise
 gui_hide
+syn_map
 puts "Runtime & Memory after 'syn_map'"
 time_info MAPPED
 report_datapath > ${RPT_DIR}/04_report_datapath_map.rpt
@@ -84,8 +79,9 @@ foreach cg [vfind / -cost_group *] {
   }
 write_snapshot -outdir ${RPT_DIR} -tag syn_map
 write_db -to_file ${MAPPED_DIR}/syn_map.db
-syn_opt ;
 gui_raise
+gui_hide
+syn_opt
 report_constraint -all_violators > ${RPT_DIR}/06_report_constraint.rpt
 write_snapshot -outdir ${RPT_DIR} -tag syn_opt
 puts "Runtime & Memory after syn_opt"
@@ -96,6 +92,7 @@ foreach cg [vfind / -cost_group *] {
 write_db -to_file ${MAPPED_DIR}/syn_opt.db
 echo -n "\n TIMEX > Compile is completed :            ";
 sh date
+gui_raise
 gui_hide
 report_analysis_views -type all           > ${RPT_DIR}/08_${TOP_DESIGN}_SYN_analysis_view.rpt
 report_area                               > ${RPT_DIR}/09_${TOP_DESIGN}_SYN_area.rpt

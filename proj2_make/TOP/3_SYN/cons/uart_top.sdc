@@ -21,8 +21,8 @@ set_units -time 1000.0ps
 reset_design
 #############################
 # Below is CLOCK SPEED 
-# Original Speed is 1ns and 80% adoptation is needed to ensure the stability of the chip
-create_clock -period 0.8 -name MAIN_CLOCK [get_ports PCLK]
+# Original Speed is 10ns and 80% adoptation is needed to ensure the stability of the chip
+create_clock -period 8 -name MAIN_CLOCK [get_ports PCLK]
 
 # External clock source and network latency is 0.2ns 
 set_clock_latency -source -max 0.2 [get_clocks MAIN_CLOCK] 

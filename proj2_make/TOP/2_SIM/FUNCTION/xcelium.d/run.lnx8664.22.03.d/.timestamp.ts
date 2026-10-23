@@ -1,0 +1,11 @@
+1790086032 /GPDK045/digital/giolib045_v3.5/vlog/pads_FF_s1vg.v
+1791358300 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/interrupt_logic.v
+1792064487 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/uart_ex_top.v
+1792516501 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/baud_gen.v
+1790932695 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/rx_logic.v
+1790830874 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/tx_fifo.v
+1791530002 /home/hah013/PROJ2/proj2_make/TOP/2_SIM/TESTBENCH/tb_tx_logic.v
+1791381636 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/rx_fifo.v
+1790086031 /GPDK045/digital/gsclib045_all_v4.4/gsclib045_svt_v4.4/gsclib045/verilog/slow_vdd1v0_basicCells.v
+1790830874 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/tx_logic.v
+1791245509 /home/hah013/PROJ2/proj2_make/TOP/1_RTL/reg_block.v
