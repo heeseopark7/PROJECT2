@@ -527,8 +527,10 @@ initial begin
     apb_write(A_DR, 32'h0000_00A3);  wait_tx_done;  expect_tx_frame(8'hA3, 1'b0, 1'b0);
     apb_write(A_DR, 32'h0000_00FF);  wait_tx_done;  expect_tx_frame(8'hFF, 1'b0, 1'b0);
     // exact bit time : start bit + D0 = 1 -> the low time is one bit long
-    apb_write(A_DR, 32'h0000_0001);
-    @(negedge UARTTXD);  t0 = $time;
+    fork
+        apb_write(A_DR, 32'h0000_0001);
+        begin @(negedge UARTTXD);  t0 = $time; end       // armed before the write
+    join
     @(posedge UARTTXD);  t1 = $time;
     width = (t1 - t0) / 10;                              // in clocks
     if (width != BITC) begin
@@ -537,8 +539,10 @@ initial begin
     end
     wait_tx_done;  expect_tx_frame(8'h01, 1'b0, 1'b0);
     // data 0 : start bit + 8 data bits are low = 9 bits
-    apb_write(A_DR, 32'h0000_0000);
-    @(negedge UARTTXD);  t0 = $time;
+    fork
+        apb_write(A_DR, 32'h0000_0000);
+        begin @(negedge UARTTXD);  t0 = $time; end
+    join
     @(posedge UARTTXD);  t1 = $time;
     width = (t1 - t0) / 10;
     if (width != 9 * BITC) begin
@@ -747,8 +751,10 @@ initial begin
         endcase
         apb_write(A_CR, CR_LBE);
         send_burst(6, 8'hD0 + i[7:0], 1'b0, 1'b0, 1'b1);
-        apb_write(A_DR, 32'h0000_0001);                   // exact bit time
-        @(negedge UARTTXD);  t0 = $time;
+        fork                                              // exact bit time
+            apb_write(A_DR, 32'h0000_0001);
+            begin @(negedge UARTTXD);  t0 = $time; end
+        join
         @(posedge UARTTXD);  t1 = $time;
         width = (t1 - t0) / 10;
         if (width != BITC) begin
