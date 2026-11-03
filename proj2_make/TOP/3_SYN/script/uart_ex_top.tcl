@@ -84,7 +84,7 @@ check_design -unresolved >> ${RPT_DIR}/00_check_design.rpt
 ####################################################################
 
 #read_sdc  ./cons/cmsdk_mcu.sdc
-source -verbose  ./cons/uart_top.sdc     ; #This command can't write report by using the mark '>'
+source -verbose  ./cons/uart_ex_top.sdc     ; #This command can't write report by using the mark '>'
 source -verbose  ./cons/dont_use_45nm.tcl ; #This command can't write report by using the mark '>'
 puts "The number of exceptions is [llength [vfind "design:$TOP_DESIGN" -exception *]]"
 #set_db "design:$DESIGN" .force_wireload <wireload name> 

@@ -5,11 +5,11 @@ QoS Summary for uart_ex_top
 ================================================================================
 Metric                          syn_generic     syn_map         syn_opt        
 ================================================================================
-Slack (ps):                     3,650           2,165           2,130
-  R2R (ps):                     4,918           2,165           2,130
-  I2R (ps):                     4,341           2,725           2,738
-  R2O (ps):                     5,537           4,465           4,556
-  I2O (ps):                     3,650           2,664           2,476
+Slack (ps):                     6,910           6,174           6,174
+  R2R (ps):                     6,910           6,174           6,174
+  I2R (ps):                     7,480           6,940           6,940
+  R2O (ps):                     7,421           7,000           7,000
+  I2O (ps):                     7,398           6,971           6,973
   CG  (ps):                  no_value        no_value        no_value
 TNS (ps):                           0               0               0
   R2R (ps):                         0               0               0
@@ -18,10 +18,10 @@ TNS (ps):                           0               0               0
   I2O (ps):                         0               0               0
   CG  (ps):                  no_value        no_value        no_value
 Failing Paths:                      0               0               0
-Cell Area:                  1,267,200       1,272,453       1,272,370
-Total Cell Area:            1,267,200       1,272,453       1,272,370
-Leaf Instances:                 2,226           1,397           1,360
-Total Instances:                2,226           1,397           1,360
+Cell Area:                      8,237           5,013           4,998
+Total Cell Area:                8,237           5,013           4,998
+Leaf Instances:                 2,126           1,257           1,234
+Total Instances:                2,126           1,257           1,234
 Utilization (%):                 0.00            0.00            0.00
 Tot. Net Length (um):        no_value        no_value        no_value
 Avg. Net Length (um):        no_value        no_value        no_value
@@ -32,17 +32,17 @@ Norm Cong Hotspot Area:
   Max Cong:                  no_value        no_value        no_value
   Tot Cong:                  no_value        no_value        no_value
 ================================================================================
-CPU  Runtime (h:m:s):        00:02:01        00:00:23        00:00:07
-Real Runtime (h:m:s):        00:42:11        00:01:06        00:00:45
-CPU  Elapsed (h:m:s):        00:02:08        00:02:31        00:02:39
-Real Elapsed (h:m:s):        00:42:15        00:43:21        00:44:06
-Memory (MB):                  1759.57         1772.75         1772.82
+CPU  Runtime (h:m:s):        00:00:28        00:00:23        00:00:04
+Real Runtime (h:m:s):        00:00:27        00:00:19        00:00:06
+CPU  Elapsed (h:m:s):        00:00:36        00:00:58        00:01:03
+Real Elapsed (h:m:s):        00:00:30        00:00:49        00:00:55
+Memory (MB):                  1767.64         1768.03         1767.85
 ================================================================================
 ================================================================================
 Flow Settings:
 ================================================================================
-Total Runtime (h:m:s): 00:44:03
-Total Memory (MB):     1772.82
+Total Runtime (h:m:s): 00:00:52
+Total Memory (MB):     1767.85
 Executable Version:    22.17-s071_1
 ================================================================================
 Total Cell Area =  Cell Area + Physical Cell Area

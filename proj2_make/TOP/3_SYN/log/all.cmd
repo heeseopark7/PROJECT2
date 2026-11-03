@@ -1,0 +1,10 @@
+# Cadence Genus(TM) Synthesis Solution, Version 22.17-s071_1, built Sep 12 2024 12:37:05
+
+# Date: Wed Nov 04 04:31:18 2026
+# Host: kopo-seongnam (x86_64 w/Linux 3.10.0-1160.el7.x86_64) (20cores*80cpus*2physical cpus*Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz 28160KB)
+# OS:   CentOS Linux release 7.9.2009 (Core)
+
+source ./script/uart_ex_top.tcl
+report_timing
+report_constraint -all_violators
+exit
