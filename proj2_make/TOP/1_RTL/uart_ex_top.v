@@ -133,115 +133,115 @@ assign  UARTTXD   = w_txd                     ;
 // baud_gen : makes the 16x tick from the divisor in reg_block
 //------------------------------------------------------------------------------
 baud_gen    uut1    (
-                .clk        (PCLK     )   ,
-                .nRst       (PRESETn  )   ,
-                .i_ibrd     (w_ibrd     )   ,
-                .o_tick_16x (w_tick     )
+                .clk            (PCLK        )   ,
+                .nRst           (PRESETn     )   ,
+                .i_ibrd         (w_ibrd      )   ,
+                .o_tick_16x     (w_tick      )
 );
  
 //------------------------------------------------------------------------------
 // tx_fifo : holds bytes written by software until tx_logic takes them
 //------------------------------------------------------------------------------
 tx_fifo     #(
-                .FIFO_DEPTH (FIFO_DEPTH )
+                .FIFO_DEPTH     (FIFO_DEPTH  )
 )           uut2
-(               .clk	    (PCLK     )	,
-				.nRst		(PRESETn  )	,
-				.i_push		(w_tx_push  )	,
-				.i_pop		(w_tx_pop   )	,
-				.i_wdata	(w_tx_wdata )	,
-				.o_rdata	(w_tx_rdata )	,
-				.o_empty	(w_tx_empty )	,
-				.o_full		(w_tx_full  )	,
-				.o_count    (w_tx_count )
+(               .clk            (PCLK        )   ,
+                .nRst           (PRESETn     )   ,
+                .i_push         (w_tx_push   )   ,
+                .i_pop          (w_tx_pop    )   ,
+                .i_wdata        (w_tx_wdata  )   ,
+                .o_rdata        (w_tx_rdata  )   ,
+                .o_empty        (w_tx_empty  )   ,
+                .o_full         (w_tx_full   )   ,
+                .o_count        (w_tx_count  )
 );
  
 //------------------------------------------------------------------------------
 // rx_fifo : holds received frames (11 bits: error flags + data) for software
 //------------------------------------------------------------------------------
 rx_fifo     #(
-                .FIFO_DEPTH (FIFO_DEPTH )
+                .FIFO_DEPTH     (FIFO_DEPTH  )
 )           uut3
-(               .clk        (PCLK     )   ,
-                .nRst       (PRESETn  )   ,
-                .i_push     (w_rx_push  )   ,
-                .i_pop      (w_rx_pop   )   ,
-                .i_wdata    (w_rx_wdata )   ,
-                .o_rdata    (w_rx_rdata )   ,
-                .o_empty    (w_rx_empty )   ,
-                .o_full     (w_rx_full  )   ,
-                .o_count    (w_rx_count )
+(               .clk            (PCLK        )   ,
+                .nRst           (PRESETn     )   ,
+                .i_push         (w_rx_push   )   ,
+                .i_pop          (w_rx_pop    )   ,
+                .i_wdata        (w_rx_wdata  )   ,
+                .o_rdata        (w_rx_rdata  )   ,
+                .o_empty        (w_rx_empty  )   ,
+                .o_full         (w_rx_full   )   ,
+                .o_count        (w_rx_count  )
 );
  
 //------------------------------------------------------------------------------
 // tx_logic : takes a byte from tx_fifo and sends it bit by bit on w_txd
 //------------------------------------------------------------------------------
 tx_logic    uut4    (
-                .clk            (PCLK     )	,
-				.nRst		    (PRESETn  )   ,
-				.i_tick_16x	    (w_tick     )   ,
-				.i_tx_en	    (w_tx_en    )   ,
-				.i_brk		    (w_brk      )   ,
-				.i_fifo_empty   (w_tx_empty )   ,
-				.i_pen		    (w_pen      )   ,
-				.i_fifo_rdata   (w_tx_rdata )   ,
-				.i_eps		    (w_eps      )   ,
-				.o_fifo_pop	    (w_tx_pop   )   ,
-				.o_txd		    (w_txd      )   ,
-				.o_tx_busy      (w_tx_busy  )
+                .clk            (PCLK        )   ,
+                .nRst           (PRESETn     )   ,
+                .i_tick_16x     (w_tick      )   ,
+                .i_tx_en        (w_tx_en     )   ,
+                .i_brk          (w_brk       )   ,
+                .i_fifo_empty   (w_tx_empty  )   ,
+                .i_pen          (w_pen       )   ,
+                .i_fifo_rdata   (w_tx_rdata  )   ,
+                .i_eps          (w_eps       )   ,
+                .o_fifo_pop     (w_tx_pop    )   ,
+                .o_txd          (w_txd       )   ,
+                .o_tx_busy      (w_tx_busy   )
 );
  
 //------------------------------------------------------------------------------
 // rx_logic : samples w_rxd, builds a frame with error flags, pushes it to rx_fifo
 //------------------------------------------------------------------------------
 rx_logic    uut5    (
-                .clk            (PCLK     )   ,
-                .nRst           (PRESETn  )   ,
-                .i_rxd          (w_rxd      )   ,
-                .i_tick_16x     (w_tick     )   ,
-                .i_rx_en        (w_rx_en    )   ,
-                .i_pen          (w_pen      )   ,
-                .i_eps          (w_eps      )   ,
-                .i_fifo_full    (w_rx_full  )   ,
-                .o_fifo_push    (w_rx_push  )   ,
-                .o_fifo_wdata   (w_rx_wdata )   ,
-                .o_overrun      (w_overrun  )
+                .clk            (PCLK        )   ,
+                .nRst           (PRESETn     )   ,
+                .i_rxd          (w_rxd       )   ,
+                .i_tick_16x     (w_tick      )   ,
+                .i_rx_en        (w_rx_en     )   ,
+                .i_pen          (w_pen       )   ,
+                .i_eps          (w_eps       )   ,
+                .i_fifo_full    (w_rx_full   )   ,
+                .o_fifo_push    (w_rx_push   )   ,
+                .o_fifo_wdata   (w_rx_wdata  )   ,
+                .o_overrun      (w_overrun   )
 );
  
 //------------------------------------------------------------------------------
 // reg_block : APB slave and register file (also builds UARTFR, enables, etc.)
 //------------------------------------------------------------------------------
 reg_block   uut6    (
-                .clk            (PCLK     )   ,
-                .nRst           (PRESETn  )   ,
-                .i_psel         (PSEL     )   ,
-                .i_penable      (PENABLE  )   ,
-                .i_pwrite       (PWRITE   )   ,
-                .i_paddr        (PADDR   )   ,
-                .i_pwdata       (PWDATA   )   ,
-                .i_tx_full      (w_tx_full  )   ,
-                .i_tx_empty     (w_tx_empty )   ,
-                .i_rx_rdata     (w_rx_rdata )   ,
-                .i_rx_empty     (w_rx_empty )   ,
-                .i_rx_full      (w_rx_full  )   ,
-                .i_tx_busy      (w_tx_busy  )   ,
-                .i_ris          (w_ris      )   ,
-                .i_mis          (w_mis      )   ,
-                .o_prdata       (PRDATA   )   ,
-                .o_pready       (PREADY   )   ,
-                .o_pslverr      (PSLVERR  )   ,
-                .o_tx_push      (w_tx_push  )   ,
-                .o_tx_wdata     (w_tx_wdata )   ,
-                .o_rx_pop       (w_rx_pop   )   ,
-                .o_tx_en        (w_tx_en    )   ,
-                .o_brk          (w_brk      )   ,
-                .o_rx_en        (w_rx_en    )   ,
-                .o_pen          (w_pen      )   ,
-                .o_eps          (w_eps      )   ,
-                .o_ibrd         (w_ibrd     )   ,
-                .o_lbe          (w_lbe      )   ,
-                .o_imsc         (w_imsc     )   ,
-                .o_icr          (w_icr      )
+                .clk            (PCLK        )   ,
+                .nRst           (PRESETn     )   ,
+                .i_psel         (PSEL        )   ,
+                .i_penable      (PENABLE     )   ,
+                .i_pwrite       (PWRITE      )   ,
+                .i_paddr        (PADDR       )   ,
+                .i_pwdata       (PWDATA      )   ,
+                .i_tx_full      (w_tx_full   )   ,
+                .i_tx_empty     (w_tx_empty  )   ,
+                .i_rx_rdata     (w_rx_rdata  )   ,
+                .i_rx_empty     (w_rx_empty  )   ,
+                .i_rx_full      (w_rx_full   )   ,
+                .i_tx_busy      (w_tx_busy   )   ,
+                .i_ris          (w_ris       )   ,
+                .i_mis          (w_mis       )   ,
+                .o_prdata       (PRDATA      )   ,
+                .o_pready       (PREADY      )   ,
+                .o_pslverr      (PSLVERR     )   ,
+                .o_tx_push      (w_tx_push   )   ,
+                .o_tx_wdata     (w_tx_wdata  )   ,
+                .o_rx_pop       (w_rx_pop    )   ,
+                .o_tx_en        (w_tx_en     )   ,
+                .o_brk          (w_brk       )   ,
+                .o_rx_en        (w_rx_en     )   ,
+                .o_pen          (w_pen       )   ,
+                .o_eps          (w_eps       )   ,
+                .o_ibrd         (w_ibrd      )   ,
+                .o_lbe          (w_lbe       )   ,
+                .o_imsc         (w_imsc      )   ,
+                .o_icr          (w_icr       )
 );
  
 //------------------------------------------------------------------------------
@@ -249,26 +249,26 @@ reg_block   uut6    (
 //   i_rx_err takes the 3 error bits of the pushed frame: [8]=FE, [9]=PE, [10]=BE
 //------------------------------------------------------------------------------
 interrupt_logic #(
-                .FIFO_DEPTH (FIFO_DEPTH)
+                .FIFO_DEPTH     (FIFO_DEPTH  )
 )           uut7
-(               .clk            (PCLK     )   ,
-                .nRst           (PRESETn  )   ,
-                .i_tx_count     (w_tx_count )   ,
-                .i_rx_count     (w_rx_count )   ,
-                .i_rx_empty     (w_rx_empty )   ,
-                .i_rx_push      (w_rx_push  )   ,
-                .i_rx_err       (w_rx_wdata[10:8]),
-                .i_overrun      (w_overrun  )   ,
-                .i_tick_16x     (w_tick     )   ,
-                .i_imsc         (w_imsc     )   ,
-                .i_icr          (w_icr      )   ,
-                .o_ris          (w_ris      )   ,
-                .o_mis          (w_mis      )   ,
-                .o_rxintr       (UARTRXINTR)  ,
-                .o_txintr       (UARTTXINTR)  ,
-                .o_rtintr       (UARTRTINTR)  ,
-                .o_eintr        (UARTEINTR)   ,
-                .o_intr         (UARTINTR )
+(               .clk            (PCLK        )   ,
+                .nRst           (PRESETn     )   ,
+                .i_tx_count     (w_tx_count  )   ,
+                .i_rx_count     (w_rx_count  )   ,
+                .i_rx_empty     (w_rx_empty  )   ,
+                .i_rx_push      (w_rx_push   )   ,
+                .i_rx_err       (w_rx_wdata[10:8])   ,
+                .i_overrun      (w_overrun   )   ,
+                .i_tick_16x     (w_tick      )   ,
+                .i_imsc         (w_imsc      )   ,
+                .i_icr          (w_icr       )   ,
+                .o_ris          (w_ris       )   ,
+                .o_mis          (w_mis       )   ,
+                .o_rxintr       (UARTRXINTR  )   ,
+                .o_txintr       (UARTTXINTR  )   ,
+                .o_rtintr       (UARTRTINTR  )   ,
+                .o_eintr        (UARTEINTR   )   ,
+                .o_intr         (UARTINTR    )
 );
 
 endmodule
