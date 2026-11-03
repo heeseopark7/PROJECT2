@@ -1,78 +1,53 @@
 
 ########################################
 # InitDesign (Setup, Floorplan)
+# uart_ex_top :: NO IO PAD version
 ########################################
 
 ## Initialization
+set GPDK ../../../../SoC/GPDK045/digital
 set init_gnd_net VSS
-set init_lef_file {../../../GPDK045/digital/gsclib045_all_v4.4/gsclib045_tech/lef/gsclib045_tech.lef ../../../GPDK045/digital/gsclib045_all_v4.4/gsclib045/lef/gsclib045_macro.lef ../../../GPDK045/digital/gsclib045_all_v4.4/gsclib045/lef/gsclib045_multibitsDFF.lef ../../../GPDK045/digital/giolib045_v3.5/lef/giolib045_modify.lef}
-set init_verilog ../SYN/mapped/cmsdk_mcu_syn_final.v
-set init_mmmc_file cmsdk_mcu.mmmc.view
-set init_io_file init.io
-set init_top_cell cmsdk_mcu
+# IO pad LEF (giolib045) is not used because this design has no pads
+set init_lef_file [list \
+    $GPDK/gsclib045_all_v4.4/gsclib045_tech/lef/gsclib045_tech.lef \
+    $GPDK/gsclib045_all_v4.4/gsclib045/lef/gsclib045_macro.lef \
+    $GPDK/gsclib045_all_v4.4/gsclib045/lef/gsclib045_multibitsDFF.lef \
+]
+set init_verilog ../3_SYN/mapped/uart_ex_top_syn_final.v
+set init_mmmc_file uart_ex_top.mmmc.view
+# No init_io_file : there are no pads. Pins are placed with editPin below.
+set init_top_cell uart_ex_top
 set init_pwr_net VDD
 init_design
 
-## Check Design
-checkDesign -io -netlist -physicalLibrary -powerGround -tieHilo -timingLibrary -spef -floorplan -place -outdir checkDesign
+## Check Design  (-io is skipped: no pad cells)
+checkDesign -netlist -physicalLibrary -powerGround -tieHilo -timingLibrary -spef -floorplan -place -outdir checkDesign
 
 ##################################################
-## Floorplan :: Below is for CHIP AREA (4030,4030)
+## Floorplan
+## Synthesized area is about 6630 um^2 (cell 4998 + net 1630)
+## -r <aspect> <utilization> <core2left> <core2bottom> <core2right> <core2top>
+## Utilization 0.7 -> core is about 97 x 97 um
+## 30 um margin leaves room for the power ring (5+5+5+5 + offset 5 = 25 um)
 ##################################################
-#floorPlan -site CoreSite -s 700 700 1425 1425 1425 1425; almost 70%
-floorPlan -site CoreSite -r 1 0.7 1200 1200 1200 1200
+floorPlan -site CoreSite -r 1 0.7 30 30 30 30
 
-## Move IO Cells (PADVDD, PADVSS)
-selectInst pad46
-placeInstance pad46 0.0 580.0 R270
-selectInst pad47
-placeInstance pad47 0.0 510.0 R270
-selectInst pad36
-placeInstance pad36 0.0 1280.0 R270
-selectInst pad35
-placeInstance pad35 0.0 1350.0 R270
-selectInst pad23
-placeInstance pad23 0.0 2190.0 R270
-selectInst pad22
-placeInstance pad22 0.0 2260.0 R270
-selectInst pad21
-placeInstance pad21 0.0 2330.0 R270
-selectInst pad12
-placeInstance pad12 0.0 2960.0 R270
-selectInst pad11
-placeInstance pad11 0.0 3030.0 R270
-selectInst pad7
-placeInstance pad7 0.0 3310.0 R270
-selectInst pad67
-placeInstance pad67 1420.0 0.0 R0
-selectInst pad68
-placeInstance pad68 1490.0 0.0 R0
-selectInst pad88
-placeInstance pad88 2890.0 0.0 R0
-selectInst pad87
-placeInstance pad87 2820.0 0.0 R0
-selectInst pad118
-placeInstance pad118 3790.0 1490.0 R90
-selectInst pad119
-placeInstance pad119 3790.0 1560.0 R90
-selectInst pad138
-placeInstance pad138 3790.0 2890.0 R90
-selectInst pad139
-placeInstance pad139 3790.0 2960.0 R90
-selectInst pad182
-placeInstance pad182 1560.0 3790.0 R180
-selectInst pad181
-placeInstance pad181 1630.0 3790.0 R180
-selectInst pad161
-placeInstance pad161 3030.0 3790.0 R180
-selectInst pad160
-placeInstance pad160 3100.0 3790.0 R180
+##################################################
+## Pin placement (no pads, so place the ports on the die edge)
+##   Left   : PWDATA[31:0]                      (input,  horizontal layer)
+##   Right  : PRDATA[31:0]                      (output, horizontal layer)
+##   Bottom : PCLK PRESETn PSEL PENABLE PWRITE PADDR[11:2] UARTRXD (input, vertical layer)
+##   Top    : PREADY PSLVERR UARTTXD UART*INTR  (output, vertical layer)
+## Metal3 = horizontal, Metal4 = vertical in GPDK045
+##################################################
+setPinAssignMode -pinEditInBatch true
 
-## IO Filler Insertion
-addIoFiller -cell padIORINGFEED60 padIORINGFEED10 padIORINGFEED5 padIORINGFEED3 padIORINGFEED1 -prefix FILLER -side n
-addIoFiller -cell padIORINGFEED60 padIORINGFEED10 padIORINGFEED5 padIORINGFEED3 padIORINGFEED1 -prefix FILLER -side s
-addIoFiller -cell padIORINGFEED60 padIORINGFEED10 padIORINGFEED5 padIORINGFEED3 padIORINGFEED1 -prefix FILLER -side w
-addIoFiller -cell padIORINGFEED60 padIORINGFEED10 padIORINGFEED5 padIORINGFEED3 padIORINGFEED1 -prefix FILLER -side e
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Left   -layer 3 -spreadType center -spacing 2.0 -pin {PWDATA[*]}
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Right  -layer 3 -spreadType center -spacing 2.0 -pin {PRDATA[*]}
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Bottom -layer 4 -spreadType center -spacing 4.0 -pin {PCLK PRESETn PSEL PENABLE PWRITE UARTRXD PADDR[*]}
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Top    -layer 4 -spreadType center -spacing 4.0 -pin {PREADY PSLVERR UARTTXD UARTRXINTR UARTTXINTR UARTRTINTR UARTEINTR UARTINTR}
+
+setPinAssignMode -pinEditInBatch false
 
 # Verify Timing
 report_analysis_views 
@@ -83,7 +58,7 @@ saveDesign -def InitDesign
 
 
 ########################################
-# PowerPlan 
+# PowerPlan (no IO pad: core ring + stripes only)
 ########################################
 
 #restoreDesign InitDesign.dat
@@ -96,7 +71,7 @@ globalNetConnect VSS -type tielo -instanceBasename *
 setTieHiLoMode -reset
 setTieHiLoMode -cell {  TIELO TIEHI } -honorDontTouch false -createHierPort false
 
-## Make Rectangular Ring  :: inner Ring
+## Make Rectangular Ring  :: core ring (the only ring, there is no pad ring)
 setAddRingMode -ring_target default -extend_over_row 0 -ignore_rows 0 -avoid_short 0 -skip_crossing_trunks none -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size 1 -orthogonal_only true -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape }
 
 addRing -nets {VDD VSS} -type core_rings -follow core -layer {top Metal11 bottom Metal11 left Metal10 right Metal10} -width {top 5 bottom 5 left 5 right 5} -spacing {top 5 bottom 5 left 5 right 5} -offset {top 5 bottom 5 left 5 right 5} -center 0 -threshold 0 -jog_distance 0 -snap_wire_center_to_grid None
@@ -106,34 +81,15 @@ setSrouteMode -viaConnectToShape { noshape }
 
 sroute -connect { corePin } -layerChangeRange { Metal1(1) Metal11(11) } -blockPinTarget { nearestTarget } -corePinTarget { firstAfterRowEnd } -allowJogging 1 -crossoverViaLayerRange { Metal1(1) Metal11(11) } -nets { VDD VSS } -allowLayerChange 1 -targetViaLayerRange { Metal1(1) Metal11(11) }
 
-## Make Vertical Stripe in Core Area 
+## Make Vertical Stripe in Core Area (pitch 40 um: core is only about 97 um wide)
 setAddStripeMode -ignore_block_check false -break_at none -route_over_rows_only false -rows_without_stripes_only false -extend_to_closest_target none -stop_at_last_wire_for_area false -partial_set_thru_domain false -ignore_nondefault_domains false -trim_antenna_back_to_shape none -spacing_type edge_to_edge -spacing_from_block 0 -stripe_min_length stripe_width -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size false -split_vias false -orthogonal_only true -allow_jog { padcore_ring  block_ring } -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape   }
 
-addStripe -nets {VDD VSS} -layer Metal10 -direction vertical -width 5 -spacing 5 -set_to_set_distance 100 -start_from left -start_offset 10 -stop_offset 0 -switch_layer_over_obs false -max_same_layer_jog_length 2 -padcore_ring_top_layer_limit Metal11 -padcore_ring_bottom_layer_limit Metal1 -block_ring_top_layer_limit Metal11 -block_ring_bottom_layer_limit Metal1 -use_wire_group 0 -snap_wire_center_to_grid None
+addStripe -nets {VDD VSS} -layer Metal10 -direction vertical -width 5 -spacing 5 -set_to_set_distance 40 -start_from left -start_offset 10 -stop_offset 0 -switch_layer_over_obs false -max_same_layer_jog_length 2 -padcore_ring_top_layer_limit Metal11 -padcore_ring_bottom_layer_limit Metal1 -block_ring_top_layer_limit Metal11 -block_ring_bottom_layer_limit Metal1 -use_wire_group 0 -snap_wire_center_to_grid None
 
-
-## Make Outer Rectangular Ring
-setAddRingMode -ring_target default -extend_over_row 0 -ignore_rows 0 -avoid_short 0 -skip_crossing_trunks none -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size 1 -orthogonal_only true -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape }
-
-addRing -nets {VDD VSS} -type core_rings -follow core -layer {top Metal11 bottom Metal11 left Metal10 right Metal10} -width {top 5 bottom 5 left 5 right 5} -spacing {top 5 bottom 5 left 5 right 5} -offset {top 1000 bottom 1000 left 1000 right 1000} -center 0 -threshold 0 -jog_distance 0 -snap_wire_center_to_grid None
-
-## Connect between Pad and Outer Rectangular Ring
-setSrouteMode -viaConnectToShape { noshape }
-
-sroute -connect { padPin } -layerChangeRange { Metal1(1) Metal11(11) } -blockPinTarget { nearestTarget } -padPinPortConnect { allPort oneGeom } -padPinTarget { nearestTarget } -allowJogging 1 -crossoverViaLayerRange { Metal1(1) Metal11(11) } -nets { VDD VSS } -allowLayerChange 1 -targetViaLayerRange { Metal1(1) Metal11(11) }
-
-
-# Connect between Inner and Outer Rectangular Ring :: Vertical direction
+## Make Horizontal Stripe in Core Area
 setAddStripeMode -ignore_block_check false -break_at none -route_over_rows_only false -rows_without_stripes_only false -extend_to_closest_target none -stop_at_last_wire_for_area false -partial_set_thru_domain false -ignore_nondefault_domains false -trim_antenna_back_to_shape none -spacing_type edge_to_edge -spacing_from_block 0 -stripe_min_length stripe_width -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size false -split_vias false -orthogonal_only true -allow_jog { padcore_ring  block_ring } -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape   }
 
-addStripe -nets {VDD VSS} -layer Metal10 -direction vertical -width 5 -spacing 5 -set_to_set_distance 100 -start_from left -start_offset 50 -stop_offset 0 -switch_layer_over_obs false -max_same_layer_jog_length 2 -padcore_ring_top_layer_limit Metal11 -padcore_ring_bottom_layer_limit Metal1 -block_ring_top_layer_limit Metal11 -block_ring_bottom_layer_limit Metal1 -use_wire_group 0 -snap_wire_center_to_grid None
-
-
-
-# Connect between Inner and Outer Rectangular Ring :: Horizontal direction
-setAddStripeMode -ignore_block_check false -break_at none -route_over_rows_only false -rows_without_stripes_only false -extend_to_closest_target none -stop_at_last_wire_for_area false -partial_set_thru_domain false -ignore_nondefault_domains false -trim_antenna_back_to_shape none -spacing_type edge_to_edge -spacing_from_block 0 -stripe_min_length stripe_width -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size false -split_vias false -orthogonal_only true -allow_jog { padcore_ring  block_ring } -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape   }
-
-addStripe -nets {VDD VSS} -layer Metal11 -direction horizontal -width 5 -spacing 5 -set_to_set_distance 100 -start_from bottom -start_offset 50 -stop_offset 0 -switch_layer_over_obs false -max_same_layer_jog_length 2 -padcore_ring_top_layer_limit Metal11 -padcore_ring_bottom_layer_limit Metal1 -block_ring_top_layer_limit Metal11 -block_ring_bottom_layer_limit Metal1 -use_wire_group 0 -snap_wire_center_to_grid None
+addStripe -nets {VDD VSS} -layer Metal11 -direction horizontal -width 5 -spacing 5 -set_to_set_distance 40 -start_from bottom -start_offset 10 -stop_offset 0 -switch_layer_over_obs false -max_same_layer_jog_length 2 -padcore_ring_top_layer_limit Metal11 -padcore_ring_bottom_layer_limit Metal1 -block_ring_top_layer_limit Metal11 -block_ring_bottom_layer_limit Metal1 -use_wire_group 0 -snap_wire_center_to_grid None
 
 ## DRC
 set_verify_drc_mode -area {0 0 0 0}
@@ -148,7 +104,7 @@ get_verify_drc_mode -ignore_trial_route -quiet
 get_verify_drc_mode -max_wrong_way_halo -quiet
 get_verify_drc_mode -use_min_spacing_on_block_obs -quiet
 get_verify_drc_mode -limit -quiet
-set_verify_drc_mode -disable_rules {} -check_ndr_spacing auto -check_only default -check_same_via_cell true -exclude_pg_net false -ignore_trial_route false -ignore_cell_blockage false -use_min_spacing_on_block_obs auto -report cmsdk_mcu.drc.rpt -limit 1000
+set_verify_drc_mode -disable_rules {} -check_ndr_spacing auto -check_only default -check_same_via_cell true -exclude_pg_net false -ignore_trial_route false -ignore_cell_blockage false -use_min_spacing_on_block_obs auto -report uart_ex_top.drc.rpt -limit 1000
 
 verify_drc
 setLayerPreference violation -isVisible 1
@@ -163,6 +119,7 @@ violationBrowser -all -no_display_false -displayByLayer
 ## If there is no error, Save Design
 saveDesign -def PowerPlan
 
+
 ######################################3
 ## Placement & Optimization
 ######################################3
@@ -173,7 +130,7 @@ set_db place_global_cong_effort high
 place_design
 
 # Check the Placement Density 
-checkPlace cmsdk_mcu.checkPlace
+checkPlace uart_ex_top.checkPlace
 
 # Early GlobalRoute :: analisys of Congestion and Timing after Placement 
 setRouteMode -earlyGlobalMinRouteLayer 1 -earlyGlobalMaxRouteLayer 11 -earlyGlobalHonorMsvRouteConstraint false -earlyGlobalRoutePartitionPinGuide true
@@ -207,6 +164,7 @@ checkDesign -place
 # If there is no error, Save Design
 saveDesign -def PlaceOpt
 
+
 ########################################
 # CTS & Optimization
 ########################################
@@ -233,9 +191,11 @@ report_clock_timing -type skew -nworst 5 > reports/clock/skew.rpt
 optDesign -postCTS 	; # Setup/DRV concurrently
 optDesign -postCTS -hold ;# Only for hold violation
 timeDesign -postCTS -outDir reports/timing/postCTS
+timeDesign -postCTS -outDir reports/timing/postCTS -hold
 
 # If there is no error, Save Design
 saveDesign -def PostCTSopt
+
 
 ##############
 # Route
@@ -273,7 +233,7 @@ get_verify_drc_mode -ignore_trial_route -quiet
 get_verify_drc_mode -max_wrong_way_halo -quiet
 get_verify_drc_mode -use_min_spacing_on_block_obs -quiet
 get_verify_drc_mode -limit -quiet
-set_verify_drc_mode -disable_rules {} -check_ndr_spacing auto -check_only default -check_same_via_cell true -exclude_pg_net false -ignore_trial_route false -ignore_cell_blockage false -use_min_spacing_on_block_obs auto -report cmsdk_mcu.drc.rpt -limit 1000
+set_verify_drc_mode -disable_rules {} -check_ndr_spacing auto -check_only default -check_same_via_cell true -exclude_pg_net false -ignore_trial_route false -ignore_cell_blockage false -use_min_spacing_on_block_obs auto -report uart_ex_top.drc.rpt -limit 1000
 
 verify_drc
 set_verify_drc_mode -area {0 0 0 0}
@@ -355,7 +315,7 @@ set_default_switching_activity -input_activity 0.2 -period 8.0 ;# 8ns operation
 read_activity_file -reset ; 		#If you don't have fsdb or vcd file, reset at here
 set_power -reset
 set_powerup_analysis -reset
-report_power -rail_analysis_format VS -outfile ./run1/cmsdk_mcu.rpt
+report_power -rail_analysis_format VS -outfile ./run1/uart_ex_top.rpt
 
 ########################
 # Rail IR-DROP Analysis
@@ -397,19 +357,20 @@ saveDesign -rc -def ChipFinish
 # Write Out Files
 
 # Netlist  file : -flat options is useful to next tool stages
-saveNetlist -flat -excludeCellInst "PADVDD PADVSS PADVSSIOR PADVDDIOR" cmsdk_mcu.v
+saveNetlist -flat -uart_ex_top.v
 
 # SDF OUT, but I recommend to use sdf file which is from Tempus tool
 # SDF version 3.0 :: RECREM included in the SDF file
-write_sdf cmsdk_mcu.sdf
+write_sdf uart_ex_top.sdf
 
 # SDF version 2.1
-write_sdf -version 2.1 cmsdk_mcu.sdf_2.1
+write_sdf -version 2.1 uart_ex_top.sdf_2.1
 
 # Write Out Constraint
-writeTimingCon cmsdk_mcu.sdc
+writeTimingCon uart_ex_top.sdc
 
 # GDS file : without layermap file for GPDK045
-streamOut cmsdk_mcu.gds -libName DesignLib -units 2000 -mode ALL
+streamOut uart_ex_top.gds -libName DesignLib -units 2000 -mode ALL
+
 
 exit
