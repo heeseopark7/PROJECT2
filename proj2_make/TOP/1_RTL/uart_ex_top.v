@@ -3,6 +3,7 @@
 // Purpose : Top level of the Extended UART. It mostly connects the blocks and
 //           adds two small circuits on the receive input path: a 2-FF
 //           synchronizer for UARTRXD and a loopback selector.
+//           (No I/O pad cells: ports connect directly to the core logic.)
 //
 // Parameters:
 //   FIFO_DEPTH : entries of the TX/RX FIFO (power of 2). One value is passed
@@ -103,41 +104,18 @@ wire    [6:0]       w_imsc                              ;   // interrupt mask fr
 wire    [6:0]       w_icr                               ;   // interrupt clear pulses from reg_block
 
 //------------------------------------------------------------------------------
-// Pad-side wires: w_<pin name> = the same signal on the core side of its pad
-//   input pin  --PADDI--> w_<pin>  --> core logic
-//   core logic --> w_<pin> --PADDO--> output pin
-//------------------------------------------------------------------------------
-wire                w_PCLK                              ;   // PCLK after its input pad
-wire                w_PRESETn                           ;   // PRESETn after its input pad
-wire                w_PSEL                              ;   // PSEL after its input pad
-wire                w_PENABLE                           ;   // PENABLE after its input pad
-wire                w_PWRITE                            ;   // PWRITE after its input pad
-wire    [11:2]      w_PRADDR                            ;   // PADDR after its input pads (10 bits)
-wire    [31:0]      w_PWDATA                            ;   // PWDATA after its input pads (32 bits)
-wire    [31:0]      w_PRDATA                            ;   // PRDATA before its output pads (from reg_block)
-wire                w_PREADY                            ;   // PREADY before its output pad (from reg_block)
-wire                w_PSLVERR                           ;   // PSLVERR before its output pad (from reg_block)
-wire                w_UARTRXD                           ;   // UARTRXD after its input pad (to the synchronizer)
-wire                w_UARTTXD                           ;   // UARTTXD before its output pad (= w_txd)
-wire                w_UARTRXINTR                        ;   // RX interrupt before its output pad
-wire                w_UARTTXINTR                        ;   // TX interrupt before its output pad
-wire                w_UARTRTINTR                        ;   // receive-timeout interrupt before its output pad
-wire                w_UARTEINTR                         ;   // error interrupt before its output pad
-wire                w_UARTINTR                          ;   // combined interrupt before its output pad
-
-//------------------------------------------------------------------------------
 // 2-FF synchronizer
 //   UARTRXD changes at any time relative to PCLK. Two flip-flops in series
 //   give the first one time to settle, so only r_rxd_s2 is used inside.
 //   Reset value is 1 (idle level) so no false start bit appears after reset.
 //------------------------------------------------------------------------------
-always @(posedge w_PCLK or negedge w_PRESETn) begin
-    if (!w_PRESETn)   begin
+always @(posedge PCLK or negedge PRESETn) begin
+    if (!PRESETn)   begin
         r_rxd_s1    <=  1'b1            ;
         r_rxd_s2    <=  1'b1            ;
     end
     else    begin
-        r_rxd_s1    <=  w_UARTRXD       ;
+        r_rxd_s1    <=  UARTRXD       ;
         r_rxd_s2    <=  r_rxd_s1        ;
     end
 end
@@ -149,14 +127,14 @@ end
 //   The UARTTXD pin always shows w_txd, also during loopback.
 //------------------------------------------------------------------------------
 assign  w_rxd     = w_lbe ? w_txd : r_rxd_s2  ;
-assign  w_UARTTXD = w_txd                     ;
+assign  UARTTXD   = w_txd                     ;
  
 //------------------------------------------------------------------------------
 // baud_gen : makes the 16x tick from the divisor in reg_block
 //------------------------------------------------------------------------------
 baud_gen    uut1    (
-                .clk        (w_PCLK     )   ,
-                .nRst       (w_PRESETn  )   ,
+                .clk        (PCLK     )   ,
+                .nRst       (PRESETn  )   ,
                 .i_ibrd     (w_ibrd     )   ,
                 .o_tick_16x (w_tick     )
 );
@@ -167,8 +145,8 @@ baud_gen    uut1    (
 tx_fifo     #(
                 .FIFO_DEPTH (FIFO_DEPTH )
 )           uut2
-(               .clk	    (w_PCLK     )	,
-				.nRst		(w_PRESETn  )	,
+(               .clk	    (PCLK     )	,
+				.nRst		(PRESETn  )	,
 				.i_push		(w_tx_push  )	,
 				.i_pop		(w_tx_pop   )	,
 				.i_wdata	(w_tx_wdata )	,
@@ -184,8 +162,8 @@ tx_fifo     #(
 rx_fifo     #(
                 .FIFO_DEPTH (FIFO_DEPTH )
 )           uut3
-(               .clk        (w_PCLK     )   ,
-                .nRst       (w_PRESETn  )   ,
+(               .clk        (PCLK     )   ,
+                .nRst       (PRESETn  )   ,
                 .i_push     (w_rx_push  )   ,
                 .i_pop      (w_rx_pop   )   ,
                 .i_wdata    (w_rx_wdata )   ,
@@ -199,8 +177,8 @@ rx_fifo     #(
 // tx_logic : takes a byte from tx_fifo and sends it bit by bit on w_txd
 //------------------------------------------------------------------------------
 tx_logic    uut4    (
-                .clk            (w_PCLK     )	,
-				.nRst		    (w_PRESETn  )   ,
+                .clk            (PCLK     )	,
+				.nRst		    (PRESETn  )   ,
 				.i_tick_16x	    (w_tick     )   ,
 				.i_tx_en	    (w_tx_en    )   ,
 				.i_brk		    (w_brk      )   ,
@@ -217,8 +195,8 @@ tx_logic    uut4    (
 // rx_logic : samples w_rxd, builds a frame with error flags, pushes it to rx_fifo
 //------------------------------------------------------------------------------
 rx_logic    uut5    (
-                .clk            (w_PCLK     )   ,
-                .nRst           (w_PRESETn  )   ,
+                .clk            (PCLK     )   ,
+                .nRst           (PRESETn  )   ,
                 .i_rxd          (w_rxd      )   ,
                 .i_tick_16x     (w_tick     )   ,
                 .i_rx_en        (w_rx_en    )   ,
@@ -234,13 +212,13 @@ rx_logic    uut5    (
 // reg_block : APB slave and register file (also builds UARTFR, enables, etc.)
 //------------------------------------------------------------------------------
 reg_block   uut6    (
-                .clk            (w_PCLK     )   ,
-                .nRst           (w_PRESETn  )   ,
-                .i_psel         (w_PSEL     )   ,
-                .i_penable      (w_PENABLE  )   ,
-                .i_pwrite       (w_PWRITE   )   ,
-                .i_paddr        (w_PRADDR   )   ,
-                .i_pwdata       (w_PWDATA   )   ,
+                .clk            (PCLK     )   ,
+                .nRst           (PRESETn  )   ,
+                .i_psel         (PSEL     )   ,
+                .i_penable      (PENABLE  )   ,
+                .i_pwrite       (PWRITE   )   ,
+                .i_paddr        (PADDR   )   ,
+                .i_pwdata       (PWDATA   )   ,
                 .i_tx_full      (w_tx_full  )   ,
                 .i_tx_empty     (w_tx_empty )   ,
                 .i_rx_rdata     (w_rx_rdata )   ,
@@ -249,9 +227,9 @@ reg_block   uut6    (
                 .i_tx_busy      (w_tx_busy  )   ,
                 .i_ris          (w_ris      )   ,
                 .i_mis          (w_mis      )   ,
-                .o_prdata       (w_PRDATA   )   ,
-                .o_pready       (w_PREADY   )   ,
-                .o_pslverr      (w_PSLVERR  )   ,
+                .o_prdata       (PRDATA   )   ,
+                .o_pready       (PREADY   )   ,
+                .o_pslverr      (PSLVERR  )   ,
                 .o_tx_push      (w_tx_push  )   ,
                 .o_tx_wdata     (w_tx_wdata )   ,
                 .o_rx_pop       (w_rx_pop   )   ,
@@ -273,8 +251,8 @@ reg_block   uut6    (
 interrupt_logic #(
                 .FIFO_DEPTH (FIFO_DEPTH)
 )           uut7
-(               .clk            (w_PCLK     )   ,
-                .nRst           (w_PRESETn  )   ,
+(               .clk            (PCLK     )   ,
+                .nRst           (PRESETn  )   ,
                 .i_tx_count     (w_tx_count )   ,
                 .i_rx_count     (w_rx_count )   ,
                 .i_rx_empty     (w_rx_empty )   ,
@@ -286,106 +264,11 @@ interrupt_logic #(
                 .i_icr          (w_icr      )   ,
                 .o_ris          (w_ris      )   ,
                 .o_mis          (w_mis      )   ,
-                .o_rxintr       (w_UARTRXINTR)  ,
-                .o_txintr       (w_UARTTXINTR)  ,
-                .o_rtintr       (w_UARTRTINTR)  ,
-                .o_eintr        (w_UARTEINTR)   ,
-                .o_intr         (w_UARTINTR )
-);
-
-//------------------------------------------------------------------------------
-// I/O pads (one cell = one bit)
-//   PADDI : input pad.  .PAD = chip pin,        .Y   = signal into the core
-//   PADDO : output pad. .A   = signal from core, .PAD = chip pin
-//   Buses use an instance array: the range after the instance name makes one
-//   cell per bit and connects the buses bit by bit (range width = bus width).
-//   Input pads: 8 instances / 48 cells.  Output pads: 9 instances / 40 cells.
-//------------------------------------------------------------------------------
-// input pads
-PADDI   ipad1(                 // PCLK
-    .PAD        (PCLK       ),
-    .Y          (w_PCLK     )
-);
-
-PADDI   ipad2(      // PRESETn
-    .PAD        (PRESETn    ),
-    .Y          (w_PRESETn  )
-);
-
-PADDI   ipad3(      // PSEL
-    .PAD        (PSEL       ),
-    .Y          (w_PSEL     )
-);
-
-PADDI   ipad4(      // PENABLE
-    .PAD        (PENABLE    ),
-    .Y          (w_PENABLE  )
-);
-
-PADDI   ipad5(      // PWRITE
-    .PAD        (PWRITE     ),
-    .Y          (w_PWRITE   )
-);
-
-PADDI   ipad6[11:2](      // PADDR[11:2], 10 cells
-    .PAD        (PADDR      ),
-    .Y          (w_PRADDR   )
-);
-
-PADDI   ipad7[31:0](      // PWDATA[31:0], 32 cells
-    .PAD        (PWDATA     ),
-    .Y          (w_PWDATA   )
-);
-
-PADDI   ipad8(      // UARTRXD
-    .PAD        (UARTRXD    ),
-    .Y          (w_UARTRXD  )
-);
-
-// output pads
-PADDO   opad1[31:0](      // PRDATA[31:0], 32 cells
-    .A          (w_PRDATA   ),
-    .PAD        (PRDATA     )
-);
-
-PADDO   opad2(      // PREADY
-    .A          (w_PREADY   ),
-    .PAD        (PREADY     )
-);
-
-PADDO   opad3(      // PSLVERR
-    .A          (w_PSLVERR  ),
-    .PAD        (PSLVERR    )
-);
-
-PADDO   opad4(      // UARTTXD
-    .A          (w_UARTTXD  ),
-    .PAD        (UARTTXD    )
-);
-
-PADDO   opad5(      // UARTRXINTR
-    .A          (w_UARTRXINTR),
-    .PAD        (UARTRXINTR )
-);
-
-PADDO   opad6(      // UARTTXINTR
-    .A          (w_UARTTXINTR),
-    .PAD        (UARTTXINTR )
-);
-
-PADDO   opad7(      // UARTRTINTR
-    .A          (w_UARTRTINTR),
-    .PAD        (UARTRTINTR )
-);
-
-PADDO   opad8(      // UARTEINTR
-    .A          (w_UARTEINTR),
-    .PAD        (UARTEINTR  )
-);
-
-PADDO   opad9(      // UARTINTR
-    .A          (w_UARTINTR ),
-    .PAD        (UARTINTR   )
+                .o_rxintr       (UARTRXINTR)  ,
+                .o_txintr       (UARTTXINTR)  ,
+                .o_rtintr       (UARTRTINTR)  ,
+                .o_eintr        (UARTEINTR)   ,
+                .o_intr         (UARTINTR )
 );
 
 endmodule
