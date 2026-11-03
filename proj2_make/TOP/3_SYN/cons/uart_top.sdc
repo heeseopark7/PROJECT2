@@ -70,9 +70,12 @@ set_output_delay -min -0.01 -clock MAIN_CLOCK [all_outputs]
 #############################
 #set_driving_cell -lib_cell DFFHQX1 -pin Q [remove_from_collection [all_inputs] [get_ports clk]]
 
-# No I/O pads: inputs are driven by a standard buffer (BUFX2), outputs see one BUFX2 input as load
+# No I/O pads: input slew is given as a number instead of a driving cell
 #set_driving_cell -lib_cell PADDI -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
-set_driving_cell -lib_cell BUFX2 -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
+#set_driving_cell -lib_cell BUFX2 -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
+# Input transition (unit = ns, see set_units): 0.1 = 100ps, same as the clock transition.
+# Estimated value (no pad / external driver known); update when the real driver is known.
+set_input_transition 0.1 [remove_from_collection [all_inputs] [get_ports PCLK]]
 
 #set_load [load_of PADDO/A] [all_outputs]
 #set_load [load_of $STD_LIB_slow/BUFX2/A] [all_outputs]
