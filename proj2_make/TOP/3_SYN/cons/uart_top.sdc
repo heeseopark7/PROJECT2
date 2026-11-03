@@ -75,7 +75,10 @@ set_output_delay -min -0.01 -clock MAIN_CLOCK [all_outputs]
 set_driving_cell -lib_cell BUFX2 -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
 
 #set_load [load_of PADDO/A] [all_outputs]
-set_load [load_of $STD_LIB_slow/BUFX2/A] [all_outputs]
+#set_load [load_of $STD_LIB_slow/BUFX2/A] [all_outputs]
+# Output load (unit = pF, see set_units): 0.02 = 20fF, estimated as short on-chip wire + a few gate inputs.
+# Estimated value (no pad / board load known); update when the real load is known.
+set_load 0.02 [all_outputs]
 
 ##############################
 ##### Operating Condition ####
