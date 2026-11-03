@@ -70,11 +70,12 @@ set_output_delay -min -0.01 -clock MAIN_CLOCK [all_outputs]
 #############################
 #set_driving_cell -lib_cell DFFHQX1 -pin Q [remove_from_collection [all_inputs] [get_ports clk]]
 
-#set_driving_cell -lib_cell PADDI -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports XTAL1]]
-set_driving_cell -lib_cell PADDI -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
+# No I/O pads: inputs are driven by a standard buffer (BUFX2), outputs see one BUFX2 input as load
+#set_driving_cell -lib_cell PADDI -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
+set_driving_cell -lib_cell BUFX2 -pin Y -library [get_libs $STD_LIB_slow] [remove_from_collection [all_inputs] [get_ports PCLK]]
 
-#set_load [load_of $STD_LIB/PADDO/A] [get_ports {TDO XTAL2}]
-set_load [load_of PADDO/A] [all_outputs]
+#set_load [load_of PADDO/A] [all_outputs]
+set_load [load_of $STD_LIB_slow/BUFX2/A] [all_outputs]
 
 ##############################
 ##### Operating Condition ####
@@ -101,8 +102,9 @@ set_operating_conditions  -max_library [get_libs slow_vdd1v0_basicCells.lib:slow
 #                                 #
 ###################################
 
-set_dont_touch [get_db insts *ipad*] 
-set_dont_touch [get_db insts *opad*]
+# No I/O pads in the design, so the *ipad* / *opad* dont_touch lines are removed
+#set_dont_touch [get_db insts *ipad*]
+#set_dont_touch [get_db insts *opad*]
 
 # Below is no use in Genus tool
 #set_isolate_ports [all_outputs]
