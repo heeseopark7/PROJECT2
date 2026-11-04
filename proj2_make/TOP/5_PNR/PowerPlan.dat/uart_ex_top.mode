@@ -27,22 +27,8 @@ catch { setDelayCalMode -engine aae }
 catch { setDelayCalMode -ignoreNetLoad false }
 catch { setDelayCalMode -socv_accuracy_mode low }
 catch { setPinAssignMode -pinEditInBatch false }
-catch { setAddRingMode -avoid_short false }
-catch { setAddRingMode -extend_over_row false }
-catch { setAddRingMode -ignore_rows false }
-catch { setAddRingMode -orthogonal_only true }
-catch { setAddRingMode -ring_target default }
-catch { setAddRingMode -skip_crossing_trunks none }
-catch { setAddRingMode -skip_via_on_pin standardcell }
-catch { setAddRingMode -skip_via_on_wire_shape noshape }
-catch { setAddRingMode -stacked_via_bottom_layer Metal1 }
-catch { setAddRingMode -stacked_via_top_layer Metal11 }
-catch { setAddRingMode -via_using_exact_crossover_size true }
 catch { setImportMode -discardFloatingVNets false }
 catch { setImportMode -keepEmptyModule true }
-catch { setTieHiLoMode -cell {{TIELO TIEHI}} }
-catch { setTieHiLoMode -createHierPort false }
-catch { setTieHiLoMode -honorDontTouch false }
 catch { setSIMode -separate_delta_delay_on_data true }
 catch { setAddStripeMode -allow_jog {padcore_ring block_ring} }
 catch { setAddStripeMode -break_at none }

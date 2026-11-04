@@ -1,0 +1,1 @@
+/home/hah013/PROJ2/proj2_make/TOP/5_PNR/uart_ex_top_pnr.sdc

@@ -115,7 +115,7 @@ set_operating_conditions  -max_library [get_libs slow_vdd1v0_basicCells.lib:slow
 # Below is no use in Genus tool
 #set_isolate_ports [all_outputs]
 
-set_ideal_network [get_ports "PCLK PRESETn"]
+#set_ideal_network [get_ports "PCLK PRESETn"]
 #set_ideal_network [get_pins u_cmsdk_mcu_clkctrl/hrst_reg_reg/Q]
 #set_ideal_network [get_pins u_cmsdk_mcu_clkctrl/prst_reg_reg/Q]
 
