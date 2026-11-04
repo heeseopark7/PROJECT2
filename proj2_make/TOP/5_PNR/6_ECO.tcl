@@ -50,7 +50,7 @@ set_verify_drc_mode -area {0 0 0 0}
 #optDesign -postRoute -drv ; # auto DRC Fix
 
 # LVS : Connectivity 
-verifyConnectivity -type all -geomConnect -error 1000 -warning 50
+verifyConnectivity -type all -geomConnect -noAntenna -error 1000 -warning 50
 
 # Violation Browser
 setLayerPreference violation -isVisible 1

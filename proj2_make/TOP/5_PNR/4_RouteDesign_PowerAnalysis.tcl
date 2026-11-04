@@ -51,7 +51,10 @@ setAnalysisMode -analysisType onChipVariation
 optDesign -postRoute -drv ; # auto DRC Fix
 
 # LVS : Connectivity 
-verifyConnectivity -type all -geomConnect -error 1000 -warning 50
+verifyConnectivity -type all -geomConnect -noAntenna -error 1000 -warning 50
+
+# Process antenna check for signal nets (verifyConnectivity skips it with -noAntenna)
+verifyProcessAntenna -reportfile uart_ex_top.antenna.rpt -error 1000
 
 # Violation Browser
 setLayerPreference violation -isVisible 1

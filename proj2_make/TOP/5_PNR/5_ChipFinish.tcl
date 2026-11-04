@@ -17,7 +17,10 @@ addFiller -cell FILL1 FILL8 FILL64 FILL4 FILL32 FILL2 FILL16 -prefix FILLER
 verify_drc
 
 # LVS : Connectivity 
-verifyConnectivity -type all -geomConnect -error 1000 -warning 50
+verifyConnectivity -type all -geomConnect -noAntenna -error 1000 -warning 50
+
+# Process antenna check for signal nets (verifyConnectivity skips it with -noAntenna)
+verifyProcessAntenna -reportfile uart_ex_top.antenna.rpt -error 1000
 
 # Error Browser
 setLayerPreference violation -isVisible 1
