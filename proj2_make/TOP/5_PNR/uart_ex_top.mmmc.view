@@ -1,4 +1,25 @@
 ########################################
+########## P&R SDC (made from synthesis SDC) ##########
+########################################
+# 1) set_ideal_network is removed.
+#    With it, CTS builds no clock buffers (all 432 sinks sit on the PCLK port) and
+#    optDesign can not touch the PRESETn net, so the PRESETn removal violations
+#    (-0.217ns, 128 paths) can never be fixed.
+# 2) set_clock_latency -source is given only for -max in the synthesis SDC.
+#    That delays only the capture clock in hold analysis. -min is added so launch and capture match.
+set pnr_sdc_in  ../3_SYN/mapped/uart_ex_top_syn_final.sdc
+set pnr_sdc_out ./uart_ex_top_pnr.sdc
+set pnr_fin  [open $pnr_sdc_in r]
+set pnr_fout [open $pnr_sdc_out w]
+while {[gets $pnr_fin pnr_line] >= 0} {
+    if {[string match "*set_ideal_network*" $pnr_line]} { continue }
+    puts $pnr_fout $pnr_line
+}
+puts $pnr_fout "set_clock_latency -source -min 0.2 \[get_clocks MAIN_CLOCK\]"
+close $pnr_fin
+close $pnr_fout
+
+########################################
 ########## Create RC_ Corner ###########
 ########################################
 
@@ -70,7 +91,7 @@ create_delay_corner -name SS_WORST \
 
 
 create_constraint_mode -name FUNC \
-   -sdc_files [list ../3_SYN/mapped/uart_ex_top_syn_final.sdc]
+   -sdc_files [list ./uart_ex_top_pnr.sdc]
 
 
 ############################################

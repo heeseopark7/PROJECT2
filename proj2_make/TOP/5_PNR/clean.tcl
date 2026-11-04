@@ -7,5 +7,5 @@ rm -rf chipFinish_after_ECO* innovus.eco
 rm -rf innovus_temp* cellIDMap scheduling_file*
 rm -rf reports/clock/* reports/timing/* timingReports/*
 rm -rf voltus.cmd* voltus.log*
-rm -rf cds_*_runtime
+rm -rf cds_*_runtime uart_ex_top_pnr.sdc
 rm -rf 0_InitDesign.cmd* 0_InitDesign.log* 1_PowerPlan.cmd* 1_PowerPlan.log* 2_PlaceOpt.cmd* 2_PlaceOpt.log* 3_PostCTSopt.cmd* 3_PostCTSopt.log* 4_RouteDesign_PowerAnalysis.cmd* 4_RouteDesign_PowerAnalysis.log* 5_ChipFinish.cmd* 5_ChipFinish.log* 6_ECO.cmd* 6_ECO.log*
