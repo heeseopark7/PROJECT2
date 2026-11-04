@@ -3,6 +3,12 @@
 ######################################3
 restoreDesign PowerPlan.dat 
 
+## Re-apply global PG connection right after restore (also covers CTS/opt inserted cells)
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
+
 ## Do not use CoreSiteDouble cells (no rows for that site)
 source dont_use_double_site.tcl
 set_db place_global_cong_effort high

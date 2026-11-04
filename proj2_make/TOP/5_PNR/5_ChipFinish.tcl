@@ -3,6 +3,12 @@
 #######################
 restoreDesign RouteDesign.dat
 
+## Re-apply global PG connection right after restore (also covers CTS/opt inserted cells)
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
+
 # Add Filler
 getFillerMode -quiet
 addFiller -cell FILL1 FILL8 FILL64 FILL4 FILL32 FILL2 FILL16 -prefix FILLER

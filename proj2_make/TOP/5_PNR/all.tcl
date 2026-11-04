@@ -125,6 +125,12 @@ saveDesign -def PowerPlan
 ######################################3
 #restoreDesign PowerPlan.dat 
 
+## Re-apply global PG connection right after restore (also covers CTS/opt inserted cells)
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
+
 ## Do not use CoreSiteDouble cells (no rows for that site)
 source dont_use_double_site.tcl
 set_db place_global_cong_effort high
@@ -173,6 +179,13 @@ saveDesign -def PlaceOpt
 ########################################
 
 #restoreDesign PlaceOpt.dat
+
+## Re-apply global PG connection right after restore (also covers CTS/opt inserted cells)
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
+file mkdir reports/timing/postCTS reports/clock
 source dont_use_double_site.tcl
 # Target about skew
 set_ccopt_property target_skew 0.01  
@@ -206,6 +219,12 @@ saveDesign -def PostCTSopt
 ##############
 
 #restoreDesign PostCTSopt.dat
+
+## Re-apply global PG connection right after restore (also covers CTS/opt inserted cells)
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
 source dont_use_double_site.tcl
 
 # Route Auto : To Detail
@@ -335,6 +354,12 @@ report_power -rail_analysis_format VS -outfile ./run1/uart_ex_top.rpt
 #### Chip Finish ######
 #######################
 #restoreDesign RouteDesign.dat
+
+## Re-apply global PG connection right after restore (also covers CTS/opt inserted cells)
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
 
 # Add Filler
 getFillerMode -quiet
