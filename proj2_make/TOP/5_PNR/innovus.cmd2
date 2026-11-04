@@ -1,0 +1,133 @@
+#######################################################
+#                                                     
+#  Innovus Command Logging File                     
+#  Created on Wed Nov  4 22:12:16 2026                
+#                                                     
+#######################################################
+
+#@(#)CDS: Innovus v22.17-s086_1 (64bit) 09/24/2024 10:51 (Linux 3.10.0-693.el7.x86_64)
+#@(#)CDS: NanoRoute 22.17-s086_1 NR240905-1647/22_17-UB (database version 18.20.629) {superthreading v2.20}
+#@(#)CDS: AAE 22.17-s013 (64bit) 09/24/2024 (Linux 3.10.0-693.el7.x86_64)
+#@(#)CDS: CTE 22.17-s017_1 () Sep 12 2024 04:53:54 ( )
+#@(#)CDS: SYNTECH 22.17-s006_1 () Aug 12 2024 03:52:27 ( )
+#@(#)CDS: CPE v22.17-s051
+#@(#)CDS: IQuantus/TQuantus 21.2.2-s369 (64bit) Tue May 7 14:30:42 PDT 2024 (Linux 3.10.0-693.el7.x86_64)
+
+set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+suppressMessage ENCEXT-2799
+win
+set enc_check_rename_command_name 1
+set init_gnd_net VSS
+set init_lef_file {../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045_tech/lef/gsclib045_tech.lef ../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/lef/gsclib045_macro.lef ../../../../SoC/GPDK045/digital/gsclib045_all_v4.4/gsclib045/lef/gsclib045_multibitsDFF.lef}
+set init_verilog ../3_SYN/mapped/uart_ex_top_syn_final.v
+set init_mmmc_file uart_ex_top.mmmc.view
+set init_top_cell uart_ex_top
+set init_pwr_net VDD
+init_design
+zoomBox -26.82500 -20.86650 115.67700 106.70300
+checkDesign -netlist -physicalLibrary -powerGround -tieHilo -timingLibrary -spef -floorplan -place -outdir checkDesign
+zoomBox -73.92200 -64.75600 199.06700 179.62750
+zoomBox -46.58000 -39.27600 150.65450 137.29100
+floorPlan -site CoreSite -r 1 0.7 30 30 30 30
+zoomBox -44.43750 -29.24900 123.21250 120.83350
+zoomBox -91.70750 -60.15350 140.33400 147.57300
+zoomBox -121.74350 -79.80700 151.24650 164.57750
+fit
+setPinAssignMode -pinEditInBatch true
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Left -layer 3 -spreadType center -spacing 2.0 -pin {PWDATA[*]}
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Right -layer 3 -spreadType center -spacing 2.0 -pin {PRDATA[*]}
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Bottom -layer 4 -spreadType center -spacing 4.0 -pin {PCLK PRESETn PSEL PENABLE PWRITE UARTRXD PADDR[*]}
+editPin -fixedPin 1 -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Top -layer 4 -spreadType center -spacing 4.0 -pin {PREADY PSLVERR UARTTXD UARTRXINTR UARTTXINTR UARTRTINTR UARTEINTR UARTINTR}
+setPinAssignMode -pinEditInBatch false
+zoomBox -43.39250 -30.17650 244.38650 227.44700
+zoomBox -23.45450 -13.64750 184.46650 172.48600
+report_analysis_views
+timeDesign -prePlace
+zoomBox -31.30650 -28.93800 256.47400 228.68700
+zoomBox -39.65000 -40.89500 298.91500 262.19300
+saveDesign -def InitDesign
+zoomBox -65.38850 -73.36250 403.21350 346.13650
+zoomBox -39.65050 -40.89550 298.91500 262.19300
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
+setTieHiLoMode -reset
+setTieHiLoMode -cell {  TIELO TIEHI } -honorDontTouch false -createHierPort false
+zoomBox -39.65100 -40.89600 298.91500 262.19300
+zoomBox 4.59000 11.36700 249.20450 230.34900
+fit
+setAddRingMode -ring_target default -extend_over_row 0 -ignore_rows 0 -avoid_short 0 -skip_crossing_trunks none -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size 1 -orthogonal_only true -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape }
+zoomBox -57.11400 -33.97500 187.49800 185.00500
+zoomBox -57.11400 -33.97500 187.49800 185.00500
+zoomBox -15.66600 -7.19150 161.06600 151.02150
+zoomBox -34.70950 -19.49750 173.21050 166.63550
+zoomBox -57.11400 -33.97500 187.49800 185.00500
+addRing -nets {VDD VSS} -type core_rings -follow core -layer {top Metal11 bottom Metal11 left Metal10 right Metal10} -width {top 5 bottom 5 left 5 right 5} -spacing {top 5 bottom 5 left 5 right 5} -offset {top 5 bottom 5 left 5 right 5} -center 0 -threshold 0 -jog_distance 0 -snap_wire_center_to_grid None
+zoomBox -116.06150 -55.00200 222.50200 248.08450
+zoomBox -84.19850 -43.63650 203.58100 213.98750
+setSrouteMode -viaConnectToShape { noshape }
+zoomBox -104.03950 -67.48550 234.52500 235.60200
+zoomBox -53.00000 -6.13550 154.92150 179.99850
+sroute -connect { corePin } -layerChangeRange { Metal1(1) Metal11(11) } -blockPinTarget { nearestTarget } -corePinTarget { firstAfterRowEnd } -allowJogging 1 -crossoverViaLayerRange { Metal1(1) Metal11(11) } -nets { VDD VSS } -allowLayerChange 1 -targetViaLayerRange { Metal1(1) Metal11(11) }
+zoomBox -96.59750 -19.15300 191.18350 238.47250
+zoomBox -53.00050 -6.13600 154.92150 179.99850
+setAddStripeMode -ignore_block_check false -break_at none -route_over_rows_only false -rows_without_stripes_only false -extend_to_closest_target none -stop_at_last_wire_for_area false -partial_set_thru_domain false -ignore_nondefault_domains false -trim_antenna_back_to_shape none -spacing_type edge_to_edge -spacing_from_block 0 -stripe_min_length stripe_width -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size false -split_vias false -orthogonal_only true -allow_jog { padcore_ring  block_ring } -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape   }
+zoomBox -94.42850 -32.79100 193.35350 224.83550
+zoomBox -72.03550 -18.38350 172.58000 200.59950
+addStripe -nets {VDD VSS} -layer Metal10 -direction vertical -width 5 -spacing 5 -set_to_set_distance 40 -start_from left -start_offset 10 -stop_offset 0 -switch_layer_over_obs false -max_same_layer_jog_length 2 -padcore_ring_top_layer_limit Metal11 -padcore_ring_bottom_layer_limit Metal1 -block_ring_top_layer_limit Metal11 -block_ring_bottom_layer_limit Metal1 -use_wire_group 0 -snap_wire_center_to_grid None
+zoomBox -93.92650 -40.16250 193.85650 217.46450
+zoomBox -72.03550 -18.43900 172.58000 200.54400
+setAddStripeMode -ignore_block_check false -break_at none -route_over_rows_only false -rows_without_stripes_only false -extend_to_closest_target none -stop_at_last_wire_for_area false -partial_set_thru_domain false -ignore_nondefault_domains false -trim_antenna_back_to_shape none -spacing_type edge_to_edge -spacing_from_block 0 -stripe_min_length stripe_width -stacked_via_top_layer Metal11 -stacked_via_bottom_layer Metal1 -via_using_exact_crossover_size false -split_vias false -orthogonal_only true -allow_jog { padcore_ring  block_ring } -skip_via_on_pin {  standardcell } -skip_via_on_wire_shape {  noshape   }
+zoomBox -87.17000 -25.86700 200.61400 231.76100
+zoomBox -72.03650 -18.44000 172.58000 200.54400
+addStripe -nets {VDD VSS} -layer Metal11 -direction horizontal -width 5 -spacing 5 -set_to_set_distance 40 -start_from bottom -start_offset 10 -stop_offset 0 -switch_layer_over_obs false -max_same_layer_jog_length 2 -padcore_ring_top_layer_limit Metal11 -padcore_ring_bottom_layer_limit Metal1 -block_ring_top_layer_limit Metal11 -block_ring_bottom_layer_limit Metal1 -use_wire_group 0 -snap_wire_center_to_grid None
+zoomBox -47.87550 -11.46250 160.04850 174.67400
+set_verify_drc_mode -area {0 0 0 0}
+get_verify_drc_mode -disable_rules -quiet
+get_verify_drc_mode -quiet -area
+get_verify_drc_mode -quiet -layer_range
+get_verify_drc_mode -check_ndr_spacing -quiet
+get_verify_drc_mode -check_only -quiet
+get_verify_drc_mode -check_same_via_cell -quiet
+get_verify_drc_mode -exclude_pg_net -quiet
+get_verify_drc_mode -ignore_trial_route -quiet
+get_verify_drc_mode -max_wrong_way_halo -quiet
+get_verify_drc_mode -use_min_spacing_on_block_obs -quiet
+get_verify_drc_mode -limit -quiet
+set_verify_drc_mode -disable_rules {} -check_ndr_spacing auto -check_only default -check_same_via_cell true -exclude_pg_net false -ignore_trial_route false -ignore_cell_blockage false -use_min_spacing_on_block_obs auto -report uart_ex_top.drc.rpt -limit 1000
+zoomBox -87.65100 -21.17400 200.13350 236.45450
+zoomBox -14.09750 -2.92950 162.63850 155.28700
+verify_drc
+setLayerPreference violation -isVisible 1
+violationBrowser -all -no_display_false -displayByLayer
+violationBrowser -all -no_display_false -displayByLayer
+violationBrowserClose
+verifyConnectivity -type all -noOpen -noAntenna -noWeakConnect -noUnConnPin -noUnroutedNet -error 1000 -warning 50
+zoomBox -65.82150 -30.72000 178.79650 188.26550
+setLayerPreference violation -isVisible 1
+violationBrowser -all -no_display_false -displayByLayer
+violationBrowserClose
+saveDesign -def PowerPlan
+zoomBox -91.59950 -33.02950 246.97300 270.06500
+zoomBox -50.93150 -25.60600 236.85550 232.02500
+setPlaceMode -place_global_cong_effort high
+place_design
+zoomBox -108.92200 -68.50450 289.40000 288.07850
+checkPlace uart_ex_top.checkPlace
+zoomBox -142.38600 -79.96250 326.22850 339.54750
+fit
+setRouteMode -earlyGlobalMinRouteLayer 1 -earlyGlobalMaxRouteLayer 11 -earlyGlobalHonorMsvRouteConstraint false -earlyGlobalRoutePartitionPinGuide true
+earlyGlobalRoute
+reportCongestion -hotSpot
+reportCongestion -overflow
+zoomBox -36.68650 -11.50850 171.23350 174.62450
+setDrawView place
+setLayerPreference densityMap -isVisible 1
+setLayerPreference densityMap -isVisible 0
+setLayerPreference pinDensityMap -isVisible 1
+zoomBox -91.10750 -58.66150 247.45650 244.42550
+zoomBox -69.95250 -40.33150 217.82650 217.29200
+setLayerPreference pinDensityMap -isVisible 0
+place_opt_design
+man IMPSP-365

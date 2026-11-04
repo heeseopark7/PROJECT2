@@ -1,0 +1,57 @@
+[11/04 22:03:51      0s] 
+[11/04 22:03:51      0s] Cadence Innovus(TM) Implementation System.
+[11/04 22:03:51      0s] Copyright 2022 Cadence Design Systems, Inc. All rights reserved worldwide.
+[11/04 22:03:51      0s] 
+[11/04 22:03:51      0s] Version:	v22.17-s086_1, built Tue Sep 24 10:51:50 PDT 2024
+[11/04 22:03:51      0s] Options:	
+[11/04 22:03:51      0s] Date:		Wed Nov  4 22:03:51 2026
+[11/04 22:03:51      0s] Host:		kopo-seongnam (x86_64 w/Linux 3.10.0-1160.el7.x86_64) (20cores*80cpus*Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz 28160KB)
+[11/04 22:03:51      0s] OS:		CentOS Linux 7 (Core)
+[11/04 22:03:51      0s] 
+[11/04 22:03:51      0s] License:
+[11/04 22:03:51      0s] 		[22:03:51.163177] Configured Lic search path (22.01-s003): 5280@172.31.52.241
+
+[11/04 22:03:51      0s] 		invs	Innovus Implementation System	22.1	Denied
+[11/04 22:03:51      0s] 		invsb	Innovus Implementation System Basic	22.1	checkout succeeded
+[11/04 22:03:51      0s] 		4 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required CPU count.
+[11/04 22:03:52      0s] **ERROR: (IMPOAX-8053):	Could not open shared library libinnovusoax22.so : liboaPrivateCDS.so: cannot open shared object file: No such file or directory.
+**ERROR: (IMPOAX-8053):	Could not open shared library libcdsSkillPcell.so : /tools/cadence/DDI221/INNOVUS221/tools.lnx86/innovus/bin/64bit/../../../lib/64bit/libcdsSkillPcell.so: undefined symbol: _ZTIN12OpenAccess_413oaFSComponentE.
+**ERROR: (IMPOAX-8033):	OpenAccess features will be disabled in this session.
+Reset Parastics called with the command setExtractRCMode -reset@(#)CDS: Innovus v22.17-s086_1 (64bit) 09/24/2024 10:51 (Linux 3.10.0-693.el7.x86_64)
+[11/04 22:04:13     21s] @(#)CDS: NanoRoute 22.17-s086_1 NR240905-1647/22_17-UB (database version 18.20.629) {superthreading v2.20}
+[11/04 22:04:13     21s] @(#)CDS: AAE 22.17-s013 (64bit) 09/24/2024 (Linux 3.10.0-693.el7.x86_64)
+[11/04 22:04:13     21s] @(#)CDS: CTE 22.17-s017_1 () Sep 12 2024 04:53:54 ( )
+[11/04 22:04:13     21s] @(#)CDS: SYNTECH 22.17-s006_1 () Aug 12 2024 03:52:27 ( )
+[11/04 22:04:13     21s] @(#)CDS: CPE v22.17-s051
+[11/04 22:04:13     21s] @(#)CDS: IQuantus/TQuantus 21.2.2-s369 (64bit) Tue May 7 14:30:42 PDT 2024 (Linux 3.10.0-693.el7.x86_64)
+[11/04 22:04:13     21s] @(#)CDS: OA 22.60-p095 Wed Apr 17 03:30:14 2024
+[11/04 22:04:13     21s] @(#)CDS: SGN 22.20-d001 (02-Jan-2023) (64 bit executable, TkQt5.9.1)
+[11/04 22:04:13     21s] @(#)CDS: RCDB 11.15.0
+[11/04 22:04:13     21s] @(#)CDS: STYLUS 22.15-s003_1 (04/04/2024 05:58 PDT)
+[11/04 22:04:13     21s] @(#)CDS: IntegrityPlanner-22.17-15746 (22.17) (2024-07-03 11:16:10+0800)
+[11/04 22:04:13     21s] Create and set the environment variable TMPDIR to /home/hah013/PROJ2/proj2_make/TOP/5_PNR/innovus_temp_222662_93e354d8-2087-41b1-8c4e-de930e0bf852_kopo-seongnam_hah013_XFlPbj.
+
+[11/04 22:04:13     21s] Change the soft stacksize limit to 0.2%RAM (770 mbytes). Set global soft_stack_size_limit to change the value.
+[11/04 22:04:16     24s] 
+[11/04 22:04:16     24s] **INFO:  MMMC transition support version v31-84 
+[11/04 22:04:16     24s] 
+[11/04 22:04:16     24s] <CMD> set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+[11/04 22:04:16     24s] <CMD> suppressMessage ENCEXT-2799
+[11/04 22:04:16     24s] <CMD> getVersion
+[11/04 22:04:17     24s] [INFO] Loading PVS 20.11 fill procedures
+[11/04 22:04:17     24s] <CMD> win
+[11/04 22:04:17     24s] <CMD> set enc_check_rename_command_name 1
+[11/04 22:04:18     24s] <CMD> gui_select -next -point {0.041 0.021}
+[11/04 22:04:18     24s] **ERROR: Design must be in memory before running "sprChangeQueryVia"
+[11/04 22:04:18     24s] **ERROR: (IMPQTF-4044):	Error occurs when 'Rda_Event::keyAction main.layout.win 328 550 P P {previousVia}' is executed with the error message: 'Design must be in memory before running "sprChangeQueryVia"'. This is probably an inner GUI action error. Use the TCL command directly instead of the GUI interactive.
+
+[11/04 22:07:16     55s] *** Memory Usage v#1 (Current mem = 1608.629M, initial mem = 654.371M) ***
+[11/04 22:07:16     55s] 
+[11/04 22:07:16     55s] *** Summary of all messages that are not suppressed in this session:
+[11/04 22:07:16     55s] Severity  ID               Count  Summary                                  
+[11/04 22:07:16     55s] ERROR     IMPOAX-8033          1  OpenAccess features will be disabled in ...
+[11/04 22:07:16     55s] ERROR     IMPOAX-8053          2  Could not open shared library %s : %s.   
+[11/04 22:07:16     55s] ERROR     IMPQTF-4044          1  Error occurs when '%s' is executed with ...
+[11/04 22:07:16     55s] *** Message Summary: 0 warning(s), 4 error(s)
+[11/04 22:07:16     55s] 
+[11/04 22:07:16     55s] --- Ending "Innovus" (totcpu=0:00:55.5, real=0:03:25, mem=1608.6M) ---

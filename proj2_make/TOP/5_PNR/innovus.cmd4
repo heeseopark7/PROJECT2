@@ -1,0 +1,182 @@
+#######################################################
+#                                                     
+#  Innovus Command Logging File                     
+#  Created on Wed Nov  4 23:11:49 2026                
+#                                                     
+#######################################################
+
+#@(#)CDS: Innovus v22.17-s086_1 (64bit) 09/24/2024 10:51 (Linux 3.10.0-693.el7.x86_64)
+#@(#)CDS: NanoRoute 22.17-s086_1 NR240905-1647/22_17-UB (database version 18.20.629) {superthreading v2.20}
+#@(#)CDS: AAE 22.17-s013 (64bit) 09/24/2024 (Linux 3.10.0-693.el7.x86_64)
+#@(#)CDS: CTE 22.17-s017_1 () Sep 12 2024 04:53:54 ( )
+#@(#)CDS: SYNTECH 22.17-s006_1 () Aug 12 2024 03:52:27 ( )
+#@(#)CDS: CPE v22.17-s051
+#@(#)CDS: IQuantus/TQuantus 21.2.2-s369 (64bit) Tue May 7 14:30:42 PDT 2024 (Linux 3.10.0-693.el7.x86_64)
+
+set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+suppressMessage ENCEXT-2799
+win
+set enc_check_rename_command_name 1
+restoreDesign PowerPlan.dat
+setDontUse SRDFFX1 true
+setDontUse SRDFFSX1 true
+setDontUse SRDFFSRX1 true
+setDontUse SRDFFSRQX1 true
+setDontUse SRDFFSQX1 true
+setDontUse SRDFFRX1 true
+setDontUse SRDFFRQX1 true
+setDontUse SRDFFQX1 true
+setDontUse SRDFFNX1 true
+setDontUse SRDFFNSX1 true
+setDontUse SRDFFNSRX1 true
+setDontUse SRDFFNSRQX1 true
+setDontUse SRDFFNSQX1 true
+setDontUse SRDFFNRX1 true
+setDontUse SRDFFNRQX1 true
+setDontUse SRDFFNQX1 true
+setDontUse RTLATX1 true
+setDontUse RTLATSRX1 true
+setDontUse RTLATRX1 true
+setDontUse RDFFX1 true
+setDontUse RDFFSX1 true
+setDontUse RDFFSRX1 true
+setDontUse RDFFSRQX1 true
+setDontUse RDFFSQX1 true
+setDontUse RDFFRX1 true
+setDontUse RDFFRQX1 true
+setDontUse RDFFQX1 true
+setDontUse RDFFNX1 true
+setDontUse RDFFNSX1 true
+setDontUse RDFFNSRX1 true
+setDontUse RDFFNSRQX1 true
+setDontUse RDFFNSQX1 true
+setDontUse RDFFNRX1 true
+setDontUse RDFFNRQX1 true
+setDontUse RDFFNQX1 true
+setDontUse PINVX1 true
+setDontUse LSLHX1_TO true
+setDontUse LSLHX1_FROM true
+setDontUse LSLH_ISONL_X1_TO_ON true
+setDontUse LSLH_ISONL_X1_FROM_OFF true
+setDontUse LSLH_ISONH_X1_TO_ON true
+setDontUse LSLH_ISONH_X1_FROM_OFF true
+setDontUse LSLH_ISOL_X1_TO_ON true
+setDontUse LSLH_ISOL_X1_FROM_OFF true
+setDontUse LSLH_ISOH_X1_TO_ON true
+setDontUse LSLH_ISOH_X1_FROM_OFF true
+setDontUse LSHLX1_FROM true
+setDontUse LSHL_ISONL_X1_FROM_OFF true
+setDontUse LSHL_ISONH_X1_FROM_OFF true
+setDontUse LSHL_ISOL_X1_FROM_OFF true
+setDontUse LSHL_ISOH_X1_FROM_OFF true
+setDontUse ISONLX1_OFF true
+setDontUse ISOLX1_OFF true
+setDontUse ISOHX1_OFF true
+setDontUse ISOHLDX1_OFF true
+setDontUse HSWX1 true
+setDontUse HSWNX1 true
+setDontUse HSWDX1 true
+setDontUse HSWDNX1 true
+setDontUse FSWX1 true
+setDontUse FSWNX1 true
+setDontUse BUFX2 true
+setPlaceMode -place_global_cong_effort high
+place_design
+checkPlace uart_ex_top.checkPlace
+setRouteMode -earlyGlobalMinRouteLayer 1 -earlyGlobalMaxRouteLayer 11 -earlyGlobalHonorMsvRouteConstraint false -earlyGlobalRoutePartitionPinGuide true
+earlyGlobalRoute
+reportCongestion -hotSpot
+reportCongestion -overflow
+setDrawView place
+setLayerPreference densityMap -isVisible 1
+setLayerPreference densityMap -isVisible 0
+setLayerPreference pinDensityMap -isVisible 1
+setLayerPreference pinDensityMap -isVisible 0
+place_opt_design
+earlyGlobalRoute
+reportCongestion -hotSpot
+reportCongestion -overflow
+timeDesign -preCTS -outDir reports/timing/preCTS
+checkDesign -place
+saveDesign -def PlaceOpt
+setDontUse SRDFFX1 true
+setDontUse SRDFFSX1 true
+setDontUse SRDFFSRX1 true
+setDontUse SRDFFSRQX1 true
+setDontUse SRDFFSQX1 true
+setDontUse SRDFFRX1 true
+setDontUse SRDFFRQX1 true
+setDontUse SRDFFQX1 true
+setDontUse SRDFFNX1 true
+setDontUse SRDFFNSX1 true
+setDontUse SRDFFNSRX1 true
+setDontUse SRDFFNSRQX1 true
+setDontUse SRDFFNSQX1 true
+setDontUse SRDFFNRX1 true
+setDontUse SRDFFNRQX1 true
+setDontUse SRDFFNQX1 true
+setDontUse RTLATX1 true
+setDontUse RTLATSRX1 true
+setDontUse RTLATRX1 true
+setDontUse RDFFX1 true
+setDontUse RDFFSX1 true
+setDontUse RDFFSRX1 true
+setDontUse RDFFSRQX1 true
+setDontUse RDFFSQX1 true
+setDontUse RDFFRX1 true
+setDontUse RDFFRQX1 true
+setDontUse RDFFQX1 true
+setDontUse RDFFNX1 true
+setDontUse RDFFNSX1 true
+setDontUse RDFFNSRX1 true
+setDontUse RDFFNSRQX1 true
+setDontUse RDFFNSQX1 true
+setDontUse RDFFNRX1 true
+setDontUse RDFFNRQX1 true
+setDontUse RDFFNQX1 true
+setDontUse PINVX1 true
+setDontUse LSLHX1_TO true
+setDontUse LSLHX1_FROM true
+setDontUse LSLH_ISONL_X1_TO_ON true
+setDontUse LSLH_ISONL_X1_FROM_OFF true
+setDontUse LSLH_ISONH_X1_TO_ON true
+setDontUse LSLH_ISONH_X1_FROM_OFF true
+setDontUse LSLH_ISOL_X1_TO_ON true
+setDontUse LSLH_ISOL_X1_FROM_OFF true
+setDontUse LSLH_ISOH_X1_TO_ON true
+setDontUse LSLH_ISOH_X1_FROM_OFF true
+setDontUse LSHLX1_FROM true
+setDontUse LSHL_ISONL_X1_FROM_OFF true
+setDontUse LSHL_ISONH_X1_FROM_OFF true
+setDontUse LSHL_ISOL_X1_FROM_OFF true
+setDontUse LSHL_ISOH_X1_FROM_OFF true
+setDontUse ISONLX1_OFF true
+setDontUse ISOLX1_OFF true
+setDontUse ISOHX1_OFF true
+setDontUse ISOHLDX1_OFF true
+setDontUse HSWX1 true
+setDontUse HSWNX1 true
+setDontUse HSWDX1 true
+setDontUse HSWDNX1 true
+setDontUse FSWX1 true
+setDontUse FSWNX1 true
+setDontUse BUFX2 true
+set_ccopt_property target_skew 0.01
+create_ccopt_clock_tree_spec
+ccopt_design
+all_constraint_modes -active
+set_interactive_constraint_modes [all_constraint_modes -active]
+set_propagated_clock [all_clocks]
+timeDesign -postCTS -outDir reports/timing/postCTS
+report_ccopt_clock_trees -file reports/clock/clock_trees.rpt
+report_ccopt_skew_groups -file reports/clock/skew_groups.rpt
+report_clock_timing -type skew -nworst 5 > reports/clock/skew.rpt
+timeDesign -postCTS -outDir reports/timing/postCTS
+report_ccopt_clock_trees -file reports/clock/clock_trees.rpt
+report_ccopt_skew_groups -file reports/clock/skew_groups.rpt
+report_clock_timing -type skew -nworst 5 > reports/clock/skew.rpt
+optDesign -postCTS
+optDesign -postCTS -hold
+timeDesign -postCTS -outDir reports/timing/postCTS
+timeDesign -postCTS -outDir reports/timing/postCTS -hold
+saveDesign -def PostCTSopt
