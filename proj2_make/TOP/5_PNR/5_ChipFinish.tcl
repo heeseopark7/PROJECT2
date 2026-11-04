@@ -38,7 +38,7 @@ saveDesign -rc -def ChipFinish
 # Write Out Files
 
 # Netlist  file : -flat options is useful to next tool stages
-saveNetlist -flat -uart_ex_top.v
+saveNetlist -flat uart_ex_top.v
 
 # SDF OUT, but I recommend to use sdf file which is from Tempus tool
 # SDF version 3.0 :: RECREM included in the SDF file

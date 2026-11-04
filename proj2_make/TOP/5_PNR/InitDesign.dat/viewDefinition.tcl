@@ -40,7 +40,7 @@ create_delay_corner -name SS_WORST\
    -rc_corner WORST
 create_constraint_mode -name FUNC\
    -sdc_files\
-    [list ${::IMEX::libVar}/mmmc/uart_ex_top_syn_final.sdc]
+    [list ${::IMEX::libVar}/mmmc/uart_ex_top_pnr.sdc]
 create_analysis_view -name FUNC_SS_WORST -constraint_mode FUNC -delay_corner SS_WORST
 create_analysis_view -name FUNC_FF_BEST -constraint_mode FUNC -delay_corner FF_BEST
 set_analysis_view -setup [list FUNC_SS_WORST] -hold [list FUNC_FF_BEST]

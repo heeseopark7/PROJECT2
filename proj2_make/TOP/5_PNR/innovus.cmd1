@@ -1,7 +1,7 @@
 #######################################################
 #                                                     
 #  Innovus Command Logging File                     
-#  Created on Wed Nov  4 22:07:57 2026                
+#  Created on Thu Nov  5 01:22:25 2026                
 #                                                     
 #######################################################
 
@@ -17,3 +17,112 @@ set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
 suppressMessage ENCEXT-2799
 win
 set enc_check_rename_command_name 1
+restoreDesign PostCTSopt.dat
+globalNetConnect VDD -type pgpin -pin VDD -instanceBasename *
+globalNetConnect VSS -type pgpin -pin VSS -instanceBasename *
+globalNetConnect VDD -type tiehi -instanceBasename *
+globalNetConnect VSS -type tielo -instanceBasename *
+setDontUse SRDFFX1 true
+setDontUse SRDFFSX1 true
+setDontUse SRDFFSRX1 true
+setDontUse SRDFFSRQX1 true
+setDontUse SRDFFSQX1 true
+setDontUse SRDFFRX1 true
+setDontUse SRDFFRQX1 true
+setDontUse SRDFFQX1 true
+setDontUse SRDFFNX1 true
+setDontUse SRDFFNSX1 true
+setDontUse SRDFFNSRX1 true
+setDontUse SRDFFNSRQX1 true
+setDontUse SRDFFNSQX1 true
+setDontUse SRDFFNRX1 true
+setDontUse SRDFFNRQX1 true
+setDontUse SRDFFNQX1 true
+setDontUse RTLATX1 true
+setDontUse RTLATSRX1 true
+setDontUse RTLATRX1 true
+setDontUse RDFFX1 true
+setDontUse RDFFSX1 true
+setDontUse RDFFSRX1 true
+setDontUse RDFFSRQX1 true
+setDontUse RDFFSQX1 true
+setDontUse RDFFRX1 true
+setDontUse RDFFRQX1 true
+setDontUse RDFFQX1 true
+setDontUse RDFFNX1 true
+setDontUse RDFFNSX1 true
+setDontUse RDFFNSRX1 true
+setDontUse RDFFNSRQX1 true
+setDontUse RDFFNSQX1 true
+setDontUse RDFFNRX1 true
+setDontUse RDFFNRQX1 true
+setDontUse RDFFNQX1 true
+setDontUse PINVX1 true
+setDontUse LSLHX1_TO true
+setDontUse LSLHX1_FROM true
+setDontUse LSLH_ISONL_X1_TO_ON true
+setDontUse LSLH_ISONL_X1_FROM_OFF true
+setDontUse LSLH_ISONH_X1_TO_ON true
+setDontUse LSLH_ISONH_X1_FROM_OFF true
+setDontUse LSLH_ISOL_X1_TO_ON true
+setDontUse LSLH_ISOL_X1_FROM_OFF true
+setDontUse LSLH_ISOH_X1_TO_ON true
+setDontUse LSLH_ISOH_X1_FROM_OFF true
+setDontUse LSHLX1_FROM true
+setDontUse LSHL_ISONL_X1_FROM_OFF true
+setDontUse LSHL_ISONH_X1_FROM_OFF true
+setDontUse LSHL_ISOL_X1_FROM_OFF true
+setDontUse LSHL_ISOH_X1_FROM_OFF true
+setDontUse ISONLX1_OFF true
+setDontUse ISOLX1_OFF true
+setDontUse ISOHX1_OFF true
+setDontUse ISOHLDX1_OFF true
+setDontUse HSWX1 true
+setDontUse HSWNX1 true
+setDontUse HSWDX1 true
+setDontUse HSWDNX1 true
+setDontUse FSWX1 true
+setDontUse FSWNX1 true
+setDontUse BUFX2 true
+setNanoRouteMode -quiet -drouteFixAntenna 1
+setNanoRouteMode -quiet -routeInsertAntennaDiode 0
+setNanoRouteMode -quiet -routeWithTimingDriven 1
+setNanoRouteMode -quiet -routeWithEco 0
+setNanoRouteMode -quiet -routeWithLithoDriven 0
+setNanoRouteMode -quiet -droutePostRouteLithoRepair 0
+setNanoRouteMode -quiet -routeWithSiDriven 1
+setNanoRouteMode -quiet -routeTdrEffort 8
+setNanoRouteMode -quiet -drouteAutoStop 0
+setNanoRouteMode -quiet -routeSelectedNetOnly 0
+setNanoRouteMode -quiet -routeTopRoutingLayer 11
+setNanoRouteMode -quiet -routeBottomRoutingLayer 1
+setNanoRouteMode -quiet -drouteEndIteration 5
+setNanoRouteMode -quiet -routeWithTimingDriven true
+setNanoRouteMode -quiet -routeWithSiDriven true
+routeDesign -globalDetail
+getMultiCpuUsage -localCpu
+get_verify_drc_mode -disable_rules -quiet
+get_verify_drc_mode -quiet -area
+get_verify_drc_mode -quiet -layer_range
+get_verify_drc_mode -check_ndr_spacing -quiet
+get_verify_drc_mode -check_only -quiet
+get_verify_drc_mode -check_same_via_cell -quiet
+get_verify_drc_mode -exclude_pg_net -quiet
+get_verify_drc_mode -ignore_trial_route -quiet
+get_verify_drc_mode -max_wrong_way_halo -quiet
+get_verify_drc_mode -use_min_spacing_on_block_obs -quiet
+get_verify_drc_mode -limit -quiet
+set_verify_drc_mode -disable_rules {} -check_ndr_spacing auto -check_only default -check_same_via_cell true -exclude_pg_net false -ignore_trial_route false -ignore_cell_blockage false -use_min_spacing_on_block_obs auto -report uart_ex_top.drc.rpt -limit 1000
+verify_drc
+set_verify_drc_mode -area {0 0 0 0}
+setLayerPreference violation -isVisible 1
+violationBrowser -all -no_display_false -displayByLayer
+violationBrowserClose
+verifyConnectivity -type all -geomConnect -error 1000 -warning 50
+setLayerPreference violation -isVisible 1
+violationBrowser -all -no_display_false -displayByLayer
+violationBrowserReport -all -no_display_false -report uart_ex_top.viols.rpt
+verifyConnectivity -type special -noAntenna -error 1000 -warning 50
+violationBrowser -all -no_display_false -displayByLayer
+verifyConnectivity -type regular -noAntenna -error 1000 -warning 50
+violationBrowser -all -no_display_false -displayByLayer
