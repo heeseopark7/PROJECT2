@@ -3,6 +3,7 @@
 ########################################
 
 restoreDesign PlaceOpt.dat
+source dont_use_double_site.tcl
 # Target about skew
 set_ccopt_property target_skew 0.01  
 

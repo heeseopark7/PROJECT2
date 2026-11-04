@@ -2,6 +2,7 @@
 #### ECO ######
 ###############
 restoreDesign RouteDesign_for_ECO.dat
+source dont_use_double_site.tcl
 source innovus.eco
 
 # After inserting repeat cells, 

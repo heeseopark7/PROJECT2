@@ -2,6 +2,9 @@
 ## Placement & Optimization
 ######################################3
 restoreDesign PowerPlan.dat 
+
+## Do not use CoreSiteDouble cells (no rows for that site)
+source dont_use_double_site.tcl
 set_db place_global_cong_effort high
 
 # First placement

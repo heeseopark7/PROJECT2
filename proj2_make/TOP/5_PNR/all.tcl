@@ -124,6 +124,9 @@ saveDesign -def PowerPlan
 ## Placement & Optimization
 ######################################3
 #restoreDesign PowerPlan.dat 
+
+## Do not use CoreSiteDouble cells (no rows for that site)
+source dont_use_double_site.tcl
 set_db place_global_cong_effort high
 
 # First placement
@@ -170,6 +173,7 @@ saveDesign -def PlaceOpt
 ########################################
 
 #restoreDesign PlaceOpt.dat
+source dont_use_double_site.tcl
 # Target about skew
 set_ccopt_property target_skew 0.01  
 
@@ -202,6 +206,7 @@ saveDesign -def PostCTSopt
 ##############
 
 #restoreDesign PostCTSopt.dat
+source dont_use_double_site.tcl
 
 # Route Auto : To Detail
 setNanoRouteMode -quiet -drouteFixAntenna 1

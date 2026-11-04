@@ -3,6 +3,7 @@
 ##############
 
 restoreDesign PostCTSopt.dat
+source dont_use_double_site.tcl
 
 # Route Auto : To Detail
 setNanoRouteMode -quiet -drouteFixAntenna 1
